@@ -1,0 +1,15 @@
+export type IconName = 
+  | 'arrow-left'
+  | 'arrow-right'
+  | 'grid'
+  | 'github'
+  | 'escape'
+  | 'linkedin'
+  | 'panel-left'
+  | 'panel-right'
+  | 'plus'
+  | 'spinner'
+  | 'archive-box'
+  | 'trash'
+  | 'donut'
+  | 'arrow-up-left';
