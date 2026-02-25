@@ -1,9 +1,12 @@
-import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
 import { setSession } from "@/app/server/auth/session";
-import { pool } from "@/app/server/db/pool";
+import { createSupabaseAdminClient } from "@/app/server/db/supabase";
 import { loginSchema } from "@/app/server/schemas/auth";
+
+function decodeBase64(value: string) {
+  return Buffer.from(value, "base64").toString("utf8");
+}
 
 export async function POST(req: Request) {
   try {
@@ -26,33 +29,68 @@ export async function POST(req: Request) {
 
     const { email, password } = parsed.data;
 
-    const result = await pool.query(
-      "select id, email, password_hash, rol, nombre, apellido, activo from public.usuarios where lower(email) = $1 limit 1",
-      [email],
-    );
+    const supabase = createSupabaseAdminClient();
 
-    if (result.rowCount === 0) {
+    const { data, error } = await supabase
+      .schema("base_de_datos_csu")
+      .from("usuario")
+      .select(
+        "id_usuario, administrador_id_administrador, nombre_usuario, correo, contrasena, rol, estado",
+      )
+      .eq("correo", email)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error("/api/login supabase error", error);
+      return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    }
+
+    if (!data) {
       return NextResponse.json(
         { error: "Credenciales inválidas" },
         { status: 401 },
       );
     }
 
-    const user = result.rows[0] as {
-      id: string;
-      email: string;
-      password_hash: string;
+    const user = data as {
+      id_usuario: number;
+      administrador_id_administrador: number;
+      nombre_usuario: string;
+      correo: string;
+      contrasena: string;
       rol: string;
-      nombre: string;
-      apellido: string;
-      activo: boolean;
+      estado: string | null;
     };
 
-    if (!user.activo) {
+    const estado = String(user.estado || "").toLowerCase();
+    if (estado === "inactivo") {
       return NextResponse.json({ error: "Usuario inactivo" }, { status: 403 });
     }
 
-    const ok = await bcrypt.compare(password, user.password_hash);
+    if (estado === "suspendido") {
+      return NextResponse.json(
+        { error: "Usuario suspendido" },
+        { status: 403 },
+      );
+    }
+
+    if (estado && estado !== "activo") {
+      return NextResponse.json(
+        { error: "Usuario no habilitado" },
+        { status: 403 },
+      );
+    }
+
+    const storedPassword = String(user.contrasena || "").trim();
+    let decodedPassword = "";
+    try {
+      decodedPassword = decodeBase64(storedPassword);
+    } catch {
+      decodedPassword = "";
+    }
+
+    const ok = decodedPassword === password || storedPassword === password;
     if (!ok) {
       return NextResponse.json(
         { error: "Credenciales inválidas" },
@@ -61,19 +99,19 @@ export async function POST(req: Request) {
     }
 
     await setSession({
-      id: user.id,
-      nombre: user.nombre,
-      apellido: user.apellido,
-      email: user.email,
+      id: String(user.id_usuario),
+      nombre: user.nombre_usuario,
+      apellido: "",
+      email: user.correo,
       rol: user.rol,
     });
 
     return NextResponse.json({
       data: {
-        id: user.id,
-        nombre: user.nombre,
-        apellido: user.apellido,
-        email: user.email,
+        id: String(user.id_usuario),
+        nombre: user.nombre_usuario,
+        apellido: "",
+        email: user.correo,
         rol: user.rol,
       },
     });

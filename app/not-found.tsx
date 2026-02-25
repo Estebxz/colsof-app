@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { UseIcon } from "./hooks/use-icons";
+import Header from "./components/header";
+import Footer from "./components/footer";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col">
+    <div className="min-h-screen flex flex-col">
+      <Header />
       <main className="flex flex-1 items-center justify-center px-6">
         <section className="text-center">
           <p className="text-base font-semibold text-blue-600">404</p>
@@ -35,6 +38,7 @@ export default function NotFound() {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

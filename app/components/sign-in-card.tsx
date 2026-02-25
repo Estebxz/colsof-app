@@ -10,6 +10,19 @@ function validateEmail(email: string) {
   return re.test(email);
 }
 
+function normalizeRole(role: unknown) {
+  const r = String(role || "")
+    .trim()
+    .toLowerCase();
+
+  if (r === "admin" || r === "administrador") return "admin";
+  if (r === "gestor") return "gestor";
+  if (r === "tecnico" || r === "técnico") return "tecnico";
+  if (r === "especialista") return "especialista";
+
+  return r;
+}
+
 export default function SignInCard() {
   const router = useRouter();
 
@@ -122,7 +135,7 @@ export default function SignInCard() {
         // ignore
       }
 
-      const rol = String(user.rol || "").toLowerCase();
+      const rol = normalizeRole(user.rol);
       if (
         rol === "admin" ||
         rol === "gestor" ||
