@@ -12,4 +12,6 @@ export type IconName =
   | 'archive-box'
   | 'trash'
   | 'donut'
-  | 'arrow-up-left';
+  | 'arrow-up-left'
+  | 'alert-circle'
+  | 'eye-rounded';

@@ -1,8 +1,11 @@
+import { UseIcon } from "@hooks/use-icons";
+
 export default function SignInCard() {
   return (
     <section className="card w-full max-w-md">
       <div className="alert" id="alertBox" role="alert" aria-live="polite">
         <div className="alert-content">
+          <UseIcon name="alert-circle" className="alert-icon" />
           <h2>Error de validación</h2>
           <p>Asegúrese de haber ingresado correctamente su información</p>
         </div>
@@ -46,7 +49,7 @@ export default function SignInCard() {
               className="toggle"
               aria-label="Mostrar u ocultar contraseña"
             >
-              👁
+              <UseIcon name="eye-rounded" />
             </button>
           </div>
         </div>
