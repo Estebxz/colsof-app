@@ -1,13 +1,160 @@
+"use client";
+
 import { UseIcon } from "@hooks/use-icons";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import type { LoginUserProps } from "@type/types";
+
+function validateEmail(email: string) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
 
 export default function SignInCard() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+
+  const isAlertVisible = useMemo(() => Boolean(alertMessage), [alertMessage]);
+
+  useEffect(() => {
+    try {
+      const rememberedEmail = window.localStorage.getItem("rememberedEmail");
+      if (rememberedEmail) {
+        setEmail(rememberedEmail);
+        setRemember(true);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  function showAlert(message: string) {
+    setAlertMessage(message);
+  }
+
+  function hideAlert() {
+    setAlertMessage(null);
+  }
+
+  function clearEmailError() {
+    if (emailError) setEmailError(false);
+  }
+
+  function clearPasswordError() {
+    if (passwordError) setPasswordError(false);
+  }
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const emailValue = email.trim();
+    const passwordValue = password.trim();
+
+    setEmailError(false);
+    setPasswordError(false);
+
+    if (!emailValue || !passwordValue) {
+      if (!emailValue) setEmailError(true);
+      if (!passwordValue) setPasswordError(true);
+      showAlert("Completa el correo y la contraseña para continuar.");
+      return;
+    }
+
+    if (!validateEmail(emailValue)) {
+      setEmailError(true);
+      showAlert("El correo no tiene un formato válido.");
+      return;
+    }
+
+    hideAlert();
+    setSubmitting(true);
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailValue, password: passwordValue }),
+      });
+
+      const data = (await response.json().catch(() => null)) as {
+        error?: string;
+        data?: LoginUserProps;
+      } | null;
+
+      if (!response.ok) {
+        showAlert((data && data.error) || "Error en la autenticación");
+        return;
+      }
+
+      const user = data?.data;
+      if (!user) {
+        showAlert("Respuesta inválida del servidor");
+        return;
+      }
+
+      const userData = {
+        id: user.id,
+        nombre: user.nombre,
+        apellido: user.apellido,
+        email: user.email,
+        rol: user.rol,
+        loginTime: new Date().toISOString(),
+      };
+
+      try {
+        window.localStorage.setItem("usuario", JSON.stringify(userData));
+
+        if (remember) {
+          window.localStorage.setItem("rememberedEmail", emailValue);
+        } else {
+          window.localStorage.removeItem("rememberedEmail");
+        }
+      } catch {
+        // ignore
+      }
+
+      const rol = String(user.rol || "").toLowerCase();
+      if (
+        rol === "admin" ||
+        rol === "gestor" ||
+        rol === "tecnico" ||
+        rol === "especialista"
+      ) {
+        router.push("/dashboard");
+        return;
+      }
+
+      showAlert("Rol de usuario no reconocido: " + user.rol);
+    } catch (err) {
+      console.error("Error en login:", err);
+      showAlert("Error al conectar con el servidor. Intenta más tarde.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <section className="card w-full max-w-md">
-      <div className="alert" id="alertBox" role="alert" aria-live="polite">
+      <div
+        className={`alert${isAlertVisible ? " show" : ""}`}
+        id="alertBox"
+        role="alert"
+        aria-live="polite"
+        onClick={hideAlert}
+      >
         <div className="alert-content">
           <UseIcon name="alert-circle" className="alert-icon" />
-          <h2>Error de validación</h2>
-          <p>Asegúrese de haber ingresado correctamente su información</p>
+          <h2 className="">Error de autenticación</h2>
+          <p>{alertMessage || ""}</p>
         </div>
       </div>
 
@@ -16,8 +163,9 @@ export default function SignInCard() {
         id="loginForm"
         noValidate
         aria-label="Formulario de inicio de sesión"
+        onSubmit={onSubmit}
       >
-        <div className="input-group">
+        <div className={`input-group${emailError ? " error" : ""}`}>
           <label htmlFor="email" className="input-label">
             Correo Electrónico
           </label>
@@ -28,26 +176,56 @@ export default function SignInCard() {
             placeholder="usuario@colsof.com.co"
             autoComplete="email"
             required
+            value={email}
+            aria-invalid={emailError ? "true" : "false"}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              clearEmailError();
+              hideAlert();
+            }}
+            onFocus={() => {
+              clearEmailError();
+            }}
           />
         </div>
 
-        <div className="input-group">
+        <div className={`input-group${passwordError ? " error" : ""}`}>
           <label htmlFor="password" className="input-label">
             Contraseña
           </label>
           <div className="input-with-icon">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               placeholder="Ingrese su contraseña"
               autoComplete="current-password"
               required
+              value={password}
+              aria-invalid={passwordError ? "true" : "false"}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                clearPasswordError();
+                hideAlert();
+              }}
+              onFocus={() => {
+                clearPasswordError();
+              }}
             />
+
             <button
               type="button"
               className="toggle"
-              aria-label="Mostrar u ocultar contraseña"
+              aria-label={
+                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+              }
+              onClick={() => setShowPassword((v) => !v)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setShowPassword((v) => !v);
+                }
+              }}
             >
               <UseIcon name="eye-rounded" />
             </button>
@@ -56,7 +234,13 @@ export default function SignInCard() {
 
         <div className="options">
           <label className="remember">
-            <input type="checkbox" id="remember" name="remember" />
+            <input
+              type="checkbox"
+              id="remember"
+              name="remember"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+            />
             <span>Recordar credenciales</span>
           </label>
           <a className="link" href="#">
@@ -64,8 +248,8 @@ export default function SignInCard() {
           </a>
         </div>
 
-        <button className="submit w-full" type="submit">
-          Ingresar
+        <button className="submit w-full" type="submit" disabled={submitting}>
+          {submitting ? "Ingresando..." : "Ingresar"}
         </button>
 
         <div className="support">

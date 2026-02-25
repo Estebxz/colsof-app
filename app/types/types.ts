@@ -1,3 +1,11 @@
+export type LoginUserProps = {
+  id: string | number;
+  nombre?: string;
+  apellido?: string;
+  email: string;
+  rol?: string;
+};
+
 export type IconName = 
   | 'arrow-left'
   | 'arrow-right'

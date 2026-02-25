@@ -6,6 +6,10 @@
   --muted: oklch(0.27 0 0);
   --muted-foreground: oklch(0.72 0 0);
   --text-primary: oklch(0.2077 0.0398 265.75);
+  --alert-bg: #fee2e2;
+  --alert-border: #fca5a5;
+  --alert-text: #dc2626;
+  --success: #10b981;
   --font-inter: "Inter", system-ui, sans-serif;
   --font-sans: Inter, sans-serif;
   --font-serif: Source Serif 4, serif;
