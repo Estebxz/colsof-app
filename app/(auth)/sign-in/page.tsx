@@ -6,10 +6,10 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <SignInCard />
-      <div className="flex-1">
-        <Footer />
-      </div>
+      <main className="flex-1 grid place-items-center px-4">
+        <SignInCard />
+      </main>
+      <Footer />
     </div>
   );
 }
