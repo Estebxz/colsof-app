@@ -10,7 +10,7 @@ function validateEmail(email: string) {
   return re.test(email);
 }
 
-function normalizeRole(role: unknown) {
+function normalizeRole(role: LoginUserProps['rol']) {
   const r = String(role || "")
     .trim()
     .toLowerCase();
@@ -18,7 +18,6 @@ function normalizeRole(role: unknown) {
   if (r === "admin" || r === "administrador") return "admin";
   if (r === "gestor") return "gestor";
   if (r === "tecnico" || r === "técnico") return "tecnico";
-  if (r === "especialista") return "especialista";
 
   return r;
 }
@@ -50,21 +49,10 @@ export default function SignInCard() {
     }
   }, []);
 
-  function showAlert(message: string) {
-    setAlertMessage(message);
-  }
-
-  function hideAlert() {
-    setAlertMessage(null);
-  }
-
-  function clearEmailError() {
-    if (emailError) setEmailError(false);
-  }
-
-  function clearPasswordError() {
-    if (passwordError) setPasswordError(false);
-  }
+  function showAlert(message: string) { setAlertMessage(message); }
+  function hideAlert() { setAlertMessage(null); }
+  function clearEmailError() { if (emailError) setEmailError(false); }
+  function clearPasswordError() { if (passwordError) setPasswordError(false); }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -139,8 +127,7 @@ export default function SignInCard() {
       if (
         rol === "admin" ||
         rol === "gestor" ||
-        rol === "tecnico" ||
-        rol === "especialista"
+        rol === "tecnico"
       ) {
         router.push("/dashboard");
         return;

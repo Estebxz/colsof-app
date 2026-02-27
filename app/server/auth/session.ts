@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
+import type { Role } from "@type/types";
 
 const COOKIE_NAME = "colsof_session";
 
@@ -8,7 +9,7 @@ type SessionUser = {
   nombre: string;
   apellido: string;
   email: string;
-  rol: string;
+  rol: Role;
 };
 
 type SessionPayload = {

@@ -19,7 +19,9 @@
       "@type/*": ["./app/types/*"],
       "@hooks/*": ["./app/hooks/*"],
       "@components/*": ["./app/components/*"],
-      "@api/*": ["./app/api/*"]
+      "@api/*": ["./app/api/*"],
+      "@ui/*": ["./app/components/ui/*"],
+      "@lib/*": ["./app/lib/*"]
     }
   },
   "include": [

@@ -3,8 +3,10 @@ export type LoginUserProps = {
   nombre?: string;
   apellido?: string;
   email: string;
-  rol?: string;
+  rol?: Role;
 };
+
+export type Role = 'Administrador' | 'Gestor' | 'Tecnico';
 
 export type IconName = 
   | 'arrow-left'
@@ -22,4 +24,12 @@ export type IconName =
   | 'donut'
   | 'arrow-up-left'
   | 'alert-circle'
-  | 'eye-rounded';
+  | 'eye-rounded'
+  | 'home'
+  | 'charts'
+  | 'db'
+  | 'user'
+  | 'camera'
+  | 'bell'
+  | 'terminal'
+  | 'spinner';
