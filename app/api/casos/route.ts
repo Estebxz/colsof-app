@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     const { data, error } = await supabase
       .schema("base_de_datos_csu")
       .from("ticket")
-      .select("id_ticket, estado, fecha_creacion, fecha_actualizacion")
+      .select("*")
       .order("fecha_creacion", { ascending: false })
       .limit(limit);
 
@@ -32,12 +32,16 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Error interno" }, { status: 500 });
     }
 
-    const casos = (data || []).map((t) => ({
-      id: t.id_ticket,
-      estado: t.estado,
-      fecha_creacion: t.fecha_creacion,
-      fecha_actualizacion: t.fecha_actualizacion,
-    }));
+    const casos = (data || []).map((t) => {
+      const row = t as Record<string, unknown>;
+      const id = (row.id_ticket ?? row.id ?? null) as number | string | null;
+      return {
+        id,
+        estado: (row.estado ?? null) as string | null,
+        fecha_creacion: (row.fecha_creacion ?? null) as string | null,
+        fecha_actualizacion: (row.fecha_actualizacion ?? null) as string | null,
+      };
+    });
 
     return NextResponse.json({ data: casos });
   } catch (err) {

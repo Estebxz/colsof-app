@@ -7,8 +7,14 @@ interface IconProps {
 
 export const UseIcon = ({ name, className = "" }: IconProps) => {
   return (
-    <svg className={className} aria-hidden="true">
-      <use href={`/icons.svg#icon-${name}`} />
+    <svg
+      className={`fill-current stroke-current ${className}`}
+      aria-hidden="true"
+    >
+      <use
+        href={`/icons.svg#icon-${name}`}
+        xlinkHref={`/icons.svg#icon-${name}`}
+      />
     </svg>
   );
 };

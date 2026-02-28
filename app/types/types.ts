@@ -32,4 +32,12 @@ export type IconName =
   | "camera"
   | "bell"
   | "terminal"
-  | "spinner";
+  | "spinner"
+  | "download";
+
+export type DashboardStats = {
+  solucionados: number;
+  creados: number;
+  enPausa: number;
+  cerrados: number;
+};

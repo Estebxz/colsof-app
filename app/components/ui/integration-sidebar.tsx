@@ -191,7 +191,7 @@ function MinimalSidebar() {
                   >
                     <UseIcon
                       name="bell"
-                      className="size-4 shrink-0 fill-black"
+                      className="size-4 shrink-0 fill-current"
                     />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Notificaciones
