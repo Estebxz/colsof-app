@@ -143,8 +143,8 @@ function MinimalSidebar() {
                 >
                   <Link
                     aria-label="Acceder a Estadisticas"
-                    href="/doc"
-                    data-active={pathname === "/doc"}
+                    href="/statistics"
+                    data-active={pathname === "/statistics"}
                     className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
                   >
                     <UseIcon
@@ -166,8 +166,8 @@ function MinimalSidebar() {
                 >
                   <Link
                     aria-label="Acceder a herramientas BD"
-                    href="/items"
-                    data-active={pathname === "/doc"}
+                    href="/data"
+                    data-active={pathname === "/data"}
                     className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
                   >
                     <UseIcon name="db" className="size-4 shrink-0 fill-black" />

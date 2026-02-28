@@ -29,7 +29,7 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background text-foreground p-4 sm:p-6 lg:p-10">
+    <div className="flex min-h-screen w-full flex-col bg-background text-foreground">
       <DashboardStatCards />
 
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm pb-6">
