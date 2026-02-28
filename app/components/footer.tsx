@@ -9,11 +9,11 @@ export default function Footer() {
         <div className="text-sm text-muted-foreground">
           Construido por{" "}
           <a
-            aria-label="Enlace al sitio web de Joan Esteban"
-            href="https://joanmm.netlify.app/"
+            aria-label="Enlace al github de Andres"
+            href="https://github.com/Ankoku18"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-foreground"
+            className="hover:text-white"
           >
             Andres
           </a>
@@ -23,7 +23,7 @@ export default function Footer() {
             href="https://joanmm.netlify.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-foreground"
+            className="hover:text-white"
           >
             Joan esteban
           </a>

@@ -117,14 +117,14 @@ export default function DataPage() {
                   </button>
                   <button
                     id="export-results"
-                    className="hidden flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#d4f0e5] border border-[#b8e4d0] text-[#1a7a52] text-[12.5px] font-medium hover:bg-[#c0e8d6] transition-colors"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#d4f0e5] border border-[#b8e4d0] text-[#1a7a52] text-[12.5px] font-medium hover:bg-[#c0e8d6] transition-colors"
                   >
                     Exportar
                   </button>
                 </div>
                 <div
                   id="query-results"
-                  className="min-h-[80px] rounded-lg border border-[#e2e5ea] bg-[#f0f2f5] p-3 text-[12px] text-[#5a6070]"
+                  className="min-h-20 rounded-lg border border-[#e2e5ea] bg-[#f0f2f5] p-3 text-[12px] text-[#5a6070]"
                 />
               </div>
 
