@@ -8,7 +8,7 @@ interface IconProps {
 export const UseIcon = ({ name, className = "" }: IconProps) => {
   return (
     <svg
-      className={`fill-current stroke-current ${className}`}
+      className={`fill-current ${className}`}
       aria-hidden="true"
     >
       <use

@@ -1,8 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-
-import { useDashboardStats } from "@/app/hooks/use-dashboard-stats";
+import { useDashboardStats } from "@hooks/use-dashboard-stats";
 
 export default function DashboardStatCards() {
   const {
@@ -13,10 +12,10 @@ export default function DashboardStatCards() {
 
   const statCards = useMemo(
     () => [
-      { title: "Solucionados", value: stats?.solucionados ?? 0 },
-      { title: "Creados", value: stats?.creados ?? 0 },
-      { title: "En Pausa", value: stats?.enPausa ?? 0 },
-      { title: "Cerrados", value: stats?.cerrados ?? 0 },
+      { title: "Solucionados", value: stats?.solucionados ?? 0, color: "var(--ring)" },
+      { title: "Creados", value: stats?.creados ?? 0, color: "var(--warning)" },
+      { title: "En Pausa", value: stats?.enPausa ?? 0, color: "var(--muted-foreground)" },
+      { title: "Cerrados", value: stats?.cerrados ?? 0, color: "var(--success)" },
     ],
     [stats],
   );
@@ -28,11 +27,11 @@ export default function DashboardStatCards() {
           key={stat.title}
           className="bg-card text-card-foreground border border-border rounded-xl p-5 shadow-sm"
         >
-          <div className="text-xs text-muted-foreground tracking-wide mb-2 uppercase font-semibold">
+          <div className="text-xs text-muted-foreground tracking-wide mb-2 uppercase font-medium">
             {stat.title}
           </div>
 
-          <div className="text-2xl font-bold leading-none mb-2">
+          <div className="text-4xl font-bold leading-none mb-2" style={{ color: stat.color }}>
             {statsLoading ? "—" : stat.value.toLocaleString("es-CO")}
           </div>
 
@@ -41,7 +40,11 @@ export default function DashboardStatCards() {
               {statsError}
             </div>
           ) : (
-            <div className="text-sm font-medium text-muted-foreground">
+            <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <span
+                className="inline-block size-2.5 rounded-full shrink-0 px-4"
+                style={{ backgroundColor: "var(--success)" }}
+              />
               {statsLoading ? "Cargando..." : "Actualizado"}
             </div>
           )}

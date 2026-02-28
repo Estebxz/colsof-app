@@ -98,7 +98,7 @@ function ChartTooltip({ state }: { state: TooltipState }) {
         width={TOOLTIP_W}
         height={72}
         rx="7"
-        fill="white"
+        fill="#eef0f3"
         stroke="oklch(0.9 0 0)"
         strokeWidth="1"
       />

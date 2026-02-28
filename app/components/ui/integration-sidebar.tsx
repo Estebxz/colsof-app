@@ -47,7 +47,7 @@ function LogoutButton() {
   return (
     <SidebarMenuButton
       tooltip="Cerrar sesión"
-      className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-foreground group-data-[collapsible=icon]:justify-center cursor-pointer"
+      className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-blue-500 group-data-[collapsible=icon]:justify-center cursor-pointer"
       onClick={onLogout}
       disabled={loading}
       aria-label="Cerrar sesión"
@@ -79,9 +79,9 @@ function MinimalSidebar() {
               )}
               aria-label="Inicio"
             >
-              <div className="flex items-center justify-center rounded-lg bg-accent p-2 transition-colors duration-150 hover:bg-accent/80">
+              <div className="flex items-center justify-center rounded-lg bg-ring p-2 transition-colors duration-150 hover:bg-ring/80">
                 <Image
-                  src="/favicon.svg"
+                  src="/favicon-light.svg"
                   alt="Logo mark"
                   width={30}
                   height={30}
@@ -92,7 +92,7 @@ function MinimalSidebar() {
                 />
               </div>
               <span className="group-data-[collapsible=icon]:hidden">
-                <h2 className="text-lg font-semibold text-black">
+                <h2 className="text-xl font-semibold text-black">
                   COLSOF S.A.S
                 </h2>
               </span>
@@ -116,7 +116,7 @@ function MinimalSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Navegar al inicio"
-                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground group-data-[collapsible=icon]:justify-center"
+                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center"
                 >
                   <Link
                     aria-label="Ir al inicio"
@@ -139,7 +139,7 @@ function MinimalSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Acceder a Estadisticas"
-                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground group-data-[collapsible=icon]:justify-center"
+                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center"
                 >
                   <Link
                     aria-label="Acceder a Estadisticas"
@@ -162,7 +162,7 @@ function MinimalSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Acceder a herramientas BD"
-                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-foreground group-data-[collapsible=icon]:justify-center"
+                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-blue-500 group-data-[collapsible=icon]:justify-center"
                 >
                   <Link
                     aria-label="Acceder a herramientas BD"
@@ -181,7 +181,7 @@ function MinimalSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Notificaciones"
-                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-foreground group-data-[collapsible=icon]:justify-center"
+                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-blue-500 group-data-[collapsible=icon]:justify-center"
                 >
                   <Link
                     aria-label="Notificaciones"
