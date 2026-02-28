@@ -35,7 +35,7 @@ export default function Home() {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://github.com/nicolasalferez20-jpg/Trabajo_final/"
+                href="https://github.com/nicolasalferez20-jpg/Trabajo_final"
                 className="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium text-gray-900 border border-gray-300 rounded-sm hover:bg-gray-300 focus:ring-1 focus:ring-white"
               >
                 <UseIcon name="github" className="mr-2 -ml-1 w-5 h-5" />
