@@ -52,7 +52,7 @@ function LogoutButton() {
       disabled={loading}
       aria-label="Cerrar sesión"
     >
-      <Image src="/default.webp" alt="" width={20} height={20} />
+      <Image src="/default.webp" alt="icon" width={25} height={25} />
       <span className="group-data-[collapsible=icon]:hidden">
         {loading ? "Cerrando..." : "Cerrar sesión"}
       </span>
@@ -92,7 +92,7 @@ function MinimalSidebar() {
                 />
               </div>
               <span className="group-data-[collapsible=icon]:hidden">
-                <h2 className="text-xl font-semibold text-black">
+                <h2 className="font-semibold text-foreground group-data-[collapsible=icon]:hidden">
                   COLSOF S.A.S
                 </h2>
               </span>
@@ -126,7 +126,7 @@ function MinimalSidebar() {
                   >
                     <UseIcon
                       name="home"
-                      className="size-4 shrink-0 fill-black"
+                      className="size-4 shrink-0"
                     />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Inicio
@@ -149,7 +149,7 @@ function MinimalSidebar() {
                   >
                     <UseIcon
                       name="charts"
-                      className="size-4 shrink-0 fill-black"
+                      className="size-4 shrink-0"
                     />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Estadisticas
@@ -170,7 +170,7 @@ function MinimalSidebar() {
                     data-active={pathname === "/data"}
                     className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
                   >
-                    <UseIcon name="db" className="size-4 shrink-0 fill-black" />
+                    <UseIcon name="db" className="size-4 shrink-0" />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Herramientas BD
                     </span>
@@ -191,7 +191,7 @@ function MinimalSidebar() {
                   >
                     <UseIcon
                       name="bell"
-                      className="size-4 shrink-0 fill-current"
+                      className="size-4 shrink-0"
                     />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Notificaciones

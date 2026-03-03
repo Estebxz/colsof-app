@@ -537,8 +537,8 @@ export default function CasesReport() {
               size="sm"
               className={
                 timeRange === value
-                  ? "bg-background border-border text-foreground hover:bg-[#e2e5ea] hover:text-foreground font-medium rounded-lg text-xs px-2.5"
-                  : "bg-[#e2e5ea] border-[#e2e5ea] text-foreground hover:bg-[#e2e5ea] hover:text-foreground font-medium rounded-lg text-xs px-2.5"
+                  ? "bg-background border-border text-foreground hover:bg-white/50 hover:text-foreground font-medium rounded-lg text-xs px-2.5"
+                  : "bg-slate-200 border-slate-200 text-foreground hover:bg-slate-100 hover:text-foreground font-medium rounded-lg text-xs px-2.5"
               }
               onClick={() => setTimeRange(value)}
               disabled={casosLoading}
