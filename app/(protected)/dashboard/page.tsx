@@ -6,15 +6,9 @@ import { useUsuarios } from "@hooks/use-usuarios";
 import DashboardStatCards from "@/app/components/dashboard/dashboard-stat-cards";
 import CasesReport from "@/app/components/dashboard/cases-report";
 import Image from "next/image";
-
-function getInitials(name: string | null) {
-  const parts = (name || "").trim().split(/\s+/).filter(Boolean);
-
-  const first = parts[0]?.[0] || "";
-  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] || "" : "";
-  const initials = `${first}${last}`.toUpperCase();
-  return initials || "?";
-}
+import { Badge } from "@/app/components/ui/badges";
+import { UseIcon } from "@/app/hooks/use-icons";
+import { AvatarInitials } from "@/app/components/ui/avatar";
 
 export default function Dashboard() {
   const {
@@ -47,7 +41,13 @@ export default function Dashboard() {
                 href="#"
                 className="text-sm text-primary font-medium hover:underline"
               >
-                Ver todo →
+                <div className="flex items-center gap-1 justify-center">
+                  Ver todo
+                  <UseIcon
+                    name="arrow-up-left"
+                    className="size-3.5 rotate-y-180"
+                  />
+                </div>
               </a>
             </div>
 
@@ -81,9 +81,10 @@ export default function Dashboard() {
                     <div className="font-medium">{user.id}</div>
 
                     <div className="flex items-center gap-2.5 min-w-0 pr-0 sm:pr-4">
-                      <div className="hidden sm:flex size-8 rounded-full bg-ring/80 items-center justify-center text-xs font-semibold text-primary shrink-0">
-                        {getInitials(user.nombre)}
-                      </div>
+                      <AvatarInitials
+                        name={user.nombre || "—"}
+                        className="hidden sm:flex size-8"
+                      />
                       <div className="min-w-0">
                         <div className="font-medium truncate">
                           {user.nombre || "—"}
@@ -95,28 +96,26 @@ export default function Dashboard() {
                     </div>
 
                     <div>
-                      <span
-                        className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${
+                      <Badge
+                        variant={
                           (user.estado || "").toLowerCase() === "suspendido"
-                            ? "bg-amber-500/15 text-amber-600"
+                            ? "warning"
                             : user.activo
-                              ? "bg-success/15 text-success"
-                              : "bg-destructive/15 text-destructive"
-                        }`}
+                              ? "success"
+                              : "destructive"
+                        }
+                        pulse
                       >
-                        <span className="size-2 rounded-full bg-current"></span>
                         {user.estado || (user.activo ? "Activo" : "Inactivo")}
-                      </span>
+                      </Badge>
                     </div>
 
                     <div>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-ring/30 text-blue-500">
-                        {user.rol || "—"}
-                      </span>
+                      <Badge variant="info">{user.rol || "—"}</Badge>
                     </div>
 
                     <div className="hidden sm:block text-right">
-                      <button className="size-7 rounded-md hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground">
+                      <button className="size-7 rounded-md hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground cursor-not-allowed">
                         ⋯
                       </button>
                     </div>
@@ -138,7 +137,13 @@ export default function Dashboard() {
                 href="#"
                 className="text-sm text-primary font-medium hover:underline"
               >
-                Ver todo →
+                <div className="flex items-center gap-1 justify-center">
+                  Ver todo
+                  <UseIcon
+                    name="arrow-up-left"
+                    className="size-3.5 rotate-y-180"
+                  />
+                </div>
               </a>
             </div>
 
@@ -179,9 +184,7 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-ring/40 text-blue-500 shrink-0">
-                      {user.rol || "—"}
-                    </span>
+                    <Badge variant="info">{user.rol || "—"}</Badge>
                   </div>
                 ))
               )}
@@ -191,7 +194,7 @@ export default function Dashboard() {
                   href="#"
                   className="text-sm text-primary font-medium hover:underline"
                 >
-                  Ver más →
+                  Ver mas...
                 </a>
               </div>
             </div>

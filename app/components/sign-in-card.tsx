@@ -4,13 +4,16 @@ import { UseIcon } from "@hooks/use-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { LoginUserProps } from "@type/types";
+import { Badge } from "@ui/badges";
+import { HomeLogo } from "@ui/home-logo";
+import { Button } from "./ui/button";
 
 function validateEmail(email: string) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
 }
 
-function normalizeRole(role: LoginUserProps['rol']) {
+function normalizeRole(role: LoginUserProps["rol"]) {
   const r = String(role || "")
     .trim()
     .toLowerCase();
@@ -21,6 +24,9 @@ function normalizeRole(role: LoginUserProps['rol']) {
 
   return r;
 }
+
+const supportMessage = encodeURIComponent("Hola, encontré un error en la aplicacion colsof.app...");
+const supportWhatsapp = `https://wa.me/573124670836?text=${supportMessage}`;
 
 export default function SignInCard() {
   const router = useRouter();
@@ -49,10 +55,18 @@ export default function SignInCard() {
     }
   }, []);
 
-  function showAlert(message: string) { setAlertMessage(message); }
-  function hideAlert() { setAlertMessage(null); }
-  function clearEmailError() { if (emailError) setEmailError(false); }
-  function clearPasswordError() { if (passwordError) setPasswordError(false); }
+  function showAlert(message: string) {
+    setAlertMessage(message);
+  }
+  function hideAlert() {
+    setAlertMessage(null);
+  }
+  function clearEmailError() {
+    if (emailError) setEmailError(false);
+  }
+  function clearPasswordError() {
+    if (passwordError) setPasswordError(false);
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -124,11 +138,7 @@ export default function SignInCard() {
       }
 
       const rol = normalizeRole(user.rol);
-      if (
-        rol === "admin" ||
-        rol === "gestor" ||
-        rol === "tecnico"
-      ) {
+      if (rol === "admin" || rol === "gestor" || rol === "tecnico") {
         router.push("/dashboard");
         return;
       }
@@ -144,19 +154,28 @@ export default function SignInCard() {
 
   return (
     <section className="card w-full max-w-md">
-      <div
-        className={`alert${isAlertVisible ? " show" : ""}`}
-        id="alertBox"
-        role="alert"
-        aria-live="polite"
-        onClick={hideAlert}
-      >
-        <div className="alert-content">
-          <UseIcon name="alert-circle" className="alert-icon" />
-          <h2 className="">Error de autenticación</h2>
-          <p>{alertMessage || ""}</p>
-        </div>
+      <HomeLogo />
+      <div className="mb-10">
+        <h1 className="font-bold text-2xl">Bienvenido</h1>
+        <p className="text-sm text-muted-foreground">
+          Ingresa tus credenciales para iniciar sesión.
+        </p>
       </div>
+      {isAlertVisible && (
+        <div
+          className="alert show"
+          id="alertBox"
+          role="alert"
+          aria-live="polite"
+          onClick={hideAlert}
+        >
+          <UseIcon name="alert-circle" className="size-6 shrink-0" />
+          <div className="alert-content">
+            <h2>Error de autenticación</h2>
+            <p>{alertMessage}</p>
+          </div>
+        </div>
+      )}
 
       <form
         className="form"
@@ -183,9 +202,7 @@ export default function SignInCard() {
               clearEmailError();
               hideAlert();
             }}
-            onFocus={() => {
-              clearEmailError();
-            }}
+            onFocus={clearEmailError}
           />
         </div>
 
@@ -208,14 +225,13 @@ export default function SignInCard() {
                 clearPasswordError();
                 hideAlert();
               }}
-              onFocus={() => {
-                clearPasswordError();
-              }}
+              onFocus={clearPasswordError}
             />
 
-            <button
-              type="button"
+            <Button
+              variant="ghost"
               className="toggle"
+              size="icon"
               aria-label={
                 showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
               }
@@ -228,7 +244,7 @@ export default function SignInCard() {
               }}
             >
               <UseIcon name="eye-rounded" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -243,19 +259,22 @@ export default function SignInCard() {
             />
             <span>Recordar credenciales</span>
           </label>
-          <a className="link" href="#">
+          <a className="text-blue-600 font-medium" href="#">
             ¿Olvidaste tu contraseña?
           </a>
         </div>
 
-        <button className="submit w-full" type="submit" disabled={submitting}>
+        <Button variant="info" disabled={submitting} size="lg">
           {submitting ? "Ingresando..." : "Ingresar"}
-        </button>
+        </Button>
 
         <div className="support">
           <p>¿No puedes acceder a tu cuenta?</p>
-          <a className="link-support" href="#">
-            Contactar Soporte
+          <a href={supportWhatsapp} target="_blank" rel="noopener noreferrer">
+            <Badge variant="secondary" size="lg" className="bg-white">
+              <UseIcon name="whatsapp" className="size-4" />
+              Contactar Soporte
+            </Badge>
           </a>
         </div>
       </form>

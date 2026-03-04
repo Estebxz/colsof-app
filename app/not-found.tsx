@@ -1,12 +1,18 @@
-import Link from "next/link";
 import { UseIcon } from "./hooks/use-icons";
 import Header from "./components/header";
 import Footer from "./components/footer";
+import { Button } from "./components/ui/button";
+import Link from "next/link";
+import { getSessionUser } from "@/app/server/auth/session";
 
-export default function NotFound() {
+const supportMessage = encodeURIComponent("Hola, encontré un error en la aplicacion colsof.app...");
+const supportWhatsapp = `https://wa.me/573124670836?text=${supportMessage}`;
+
+export default async function NotFound() {
+  const user = await getSessionUser();
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header userName={user?.nombre}/>
       <main className="flex flex-1 items-center justify-center px-6">
         <section className="text-center">
           <p className="text-base font-semibold text-blue-600">404</p>
@@ -16,25 +22,21 @@ export default function NotFound() {
             Encontrada
           </h1>
 
-          <p className="max-w-xl mx-auto font-light text-gray-600 sm:text-xl leading-relaxed">
+          <p className="max-w-xl mx-auto font-light text-foreground sm:text-xl leading-relaxed">
             Lo sentimos, no pudimos encontrar la página que estás buscando.
           </p>
 
           <div className="mt-8 flex items-center justify-center gap-x-6">
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium text-white bg-blue-700 rounded-sm hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
-            >
-              Volver al inicio
+            <Link href="/">
+              <Button variant="info">Volver al inicio</Button>
             </Link>
 
-            <Link
-              href="/support"
-              className="inline-flex items-center gap-2 rounded-sm px-4 py-2.5 text-sm font-medium text-black hover:bg-gray-300"
-            >
-              Contactar soporte
-              <UseIcon name="arrow-up-left" className="size-4 rotate-y-180" />
-            </Link>
+            <a href={supportWhatsapp} target="_blank" rel="noopener noreferrer">
+              <Button variant="secondary">
+                <UseIcon name="arrow-up-left" className="size-4 rotate-y-180" />
+                Contactar soporte
+              </Button>
+            </a>
           </div>
         </section>
       </main>

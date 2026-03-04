@@ -33,7 +33,8 @@ export type IconName =
   | "bell"
   | "terminal"
   | "spinner"
-  | "download";
+  | "download"
+  | "whatsapp";
 
 export type DashboardStats = {
   solucionados: number;

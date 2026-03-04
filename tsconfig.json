@@ -21,7 +21,8 @@
       "@components/*": ["./app/components/*"],
       "@api/*": ["./app/api/*"],
       "@ui/*": ["./app/components/ui/*"],
-      "@lib/*": ["./app/lib/*"]
+      "@lib/*": ["./app/lib/*"],
+      "@public/*": ["./public/*"]
     }
   },
   "include": [

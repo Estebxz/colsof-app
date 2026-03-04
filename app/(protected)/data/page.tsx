@@ -1,4 +1,135 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
+type TabKey = "consultas" | "backup" | "mantenimiento" | "importar";
+type QueryId =
+  | "tickets_recientes"
+  | "tickets_no_resueltos"
+  | "tickets_por_estado";
+
+type QueryResult = {
+  queryId: QueryId;
+  columns: string[];
+  rows: Record<string, unknown>[];
+};
+
+function escapeCsvValue(v: unknown) {
+  if (v === null || v === undefined) return "";
+  const s = String(v);
+  if (/[",\n\r]/.test(s)) {
+    return `"${s.replaceAll('"', '""')}"`;
+  }
+  return s;
+}
+
+function downloadCsv(
+  filename: string,
+  columns: string[],
+  rows: Record<string, unknown>[],
+) {
+  const header = columns.map(escapeCsvValue).join(",");
+  const lines = rows.map((r) =>
+    columns.map((c) => escapeCsvValue(r[c])).join(","),
+  );
+  const csv = [header, ...lines].join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 export default function DataPage() {
+  const [activeTab, setActiveTab] = useState<TabKey>("consultas");
+  const [selectedQueryId, setSelectedQueryId] =
+    useState<QueryId>("tickets_recientes");
+  const [queryText, setQueryText] = useState(
+    "SELECT id_ticket, estado, fecha_creacion, fecha_actualizacion FROM ticket ORDER BY fecha_creacion DESC",
+  );
+  const [result, setResult] = useState<QueryResult | null>(null);
+  const [executeLoading, setExecuteLoading] = useState(false);
+  const [executeError, setExecuteError] = useState<string | null>(null);
+
+  const sampleQueries = useMemo(
+    () => [
+      {
+        name: "Tickets recientes",
+        desc: "Últimos tickets creados (ordenados por fecha)",
+        preview: "SELECT ... FROM ticket ORDER BY fecha_creacion DESC",
+        queryId: "tickets_recientes" as const,
+        queryText:
+          "SELECT id_ticket, estado, fecha_creacion, fecha_actualizacion FROM ticket ORDER BY fecha_creacion DESC",
+      },
+      {
+        name: "Tickets no resueltos",
+        desc: "Tickets cuyo estado es distinto de resuelto",
+        preview: "SELECT ... FROM ticket WHERE estado != 'resuelto' ...",
+        queryId: "tickets_no_resueltos" as const,
+        queryText:
+          "SELECT id_ticket, estado, fecha_creacion, fecha_actualizacion FROM ticket WHERE estado != 'resuelto' ORDER BY fecha_creacion DESC",
+      },
+      {
+        name: "Tickets por estado",
+        desc: "Ordena tickets por estado (útil para revisar distribución)",
+        preview: "SELECT ... FROM ticket ORDER BY estado ASC",
+        queryId: "tickets_por_estado" as const,
+        queryText:
+          "SELECT id_ticket, estado, fecha_creacion, fecha_actualizacion FROM ticket ORDER BY estado ASC",
+      },
+    ],
+    [],
+  );
+
+  async function onExecute() {
+    setExecuteLoading(true);
+    setExecuteError(null);
+
+    try {
+      const res = await fetch("/api/data/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          queryId: selectedQueryId,
+          params: { limit: 200 },
+        }),
+      });
+
+      const json = (await res.json().catch(() => null)) as {
+        data?: QueryResult;
+        error?: string;
+      } | null;
+
+      if (!res.ok) {
+        setExecuteError(json?.error || "Error al ejecutar consulta");
+        return;
+      }
+
+      if (!json?.data) {
+        setExecuteError("Respuesta inválida del servidor");
+        return;
+      }
+
+      setResult(json.data);
+    } catch (err) {
+      console.error("/api/data/query error", err);
+      setExecuteError("Error al ejecutar consulta");
+    } finally {
+      setExecuteLoading(false);
+    }
+  }
+
+  function onClear() {
+    setExecuteError(null);
+    setResult(null);
+    setQueryText("");
+  }
+
   return (
     <div>
       {/* Database Status Cards */}
@@ -63,7 +194,11 @@ export default function DataPage() {
       {/* Tabs Container */}
       <div className="bg-[#eef0f3] border border-[#e2e5ea] rounded-xl shadow-sm overflow-hidden">
         {/* Tabs Navigation */}
-        <div className="flex border-b border-[#e2e5ea] bg-[#e8eaed] px-1 pt-1 gap-0.5">
+        <div
+          className="flex border-b border-[#e2e5ea] bg-[#e8eaed] px-1 pt-1 gap-0.5"
+          role="tablist"
+          aria-label="Herramientas de base de datos"
+        >
           {[
             { key: "consultas", icon: "search", label: "Consultas SQL" },
             { key: "backup", icon: "save", label: "Backup & Restore" },
@@ -73,6 +208,12 @@ export default function DataPage() {
             <button
               key={key}
               data-tab={key}
+              data-active={activeTab === key}
+              onClick={() => setActiveTab(key as TabKey)}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === key}
+              aria-controls={`${key}-tab`}
               className="tab-button flex items-center gap-2 px-4 py-2.5 text-[12.5px] font-medium rounded-t-lg border border-transparent
                    text-[#5a6070] hover:text-[#1a1d23] hover:bg-[#eef0f3] transition-all
                    data-[active=true]:bg-[#eef0f3] data-[active=true]:border-[#e2e5ea] data-[active=true]:border-b-[#eef0f3] data-[active=true]:text-[#3b6de8]"
@@ -85,7 +226,11 @@ export default function DataPage() {
         {/* Tab Content */}
         <div className="p-5">
           {/* ── Consultas SQL ── */}
-          <div className="tab-pane" id="consultas-tab">
+          <div
+            className={`tab-pane ${activeTab === "consultas" ? "" : "hidden"}`}
+            id="consultas-tab"
+            role="tabpanel"
+          >
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
               {/* Editor */}
               <div className="flex flex-col gap-3">
@@ -100,24 +245,40 @@ export default function DataPage() {
                        font-mono text-[12.5px] text-[#1a1d23] placeholder:text-[#8e95a3]
                        focus:outline-none focus:ring-2 focus:ring-[#3b6de8]/30 focus:border-[#3b6de8]
                        transition-colors"
-                  defaultValue={`SELECT * FROM casos WHERE estado != "Resuelto" ORDER BY fecha_creacion DESC`}
+                  value={queryText}
+                  onChange={(e) => setQueryText(e.target.value)}
                 />
                 <div className="flex items-center gap-2">
                   <button
                     id="execute-query"
                     className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#3b6de8] text-[#eef0f3] text-[12.5px] font-medium hover:bg-[#2d5cd4] transition-colors"
+                    onClick={onExecute}
+                    disabled={executeLoading}
                   >
-                    Ejecutar Consulta
+                    {executeLoading ? "Ejecutando…" : "Ejecutar Consulta"}
                   </button>
                   <button
                     id="clear-query"
                     className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#f0f2f5] border border-[#d8dce2] text-[#5a6070] text-[12.5px] font-medium hover:bg-[#e2e5ea] transition-colors"
+                    onClick={onClear}
+                    disabled={executeLoading}
                   >
                     Limpiar
                   </button>
                   <button
                     id="export-results"
                     className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#d4f0e5] border border-[#b8e4d0] text-[#1a7a52] text-[12.5px] font-medium hover:bg-[#c0e8d6] transition-colors"
+                    onClick={() => {
+                      if (!result || result.columns.length === 0) return;
+                      downloadCsv(
+                        `data_${result.queryId}.csv`,
+                        result.columns,
+                        result.rows,
+                      );
+                    }}
+                    disabled={
+                      !result || executeLoading || result.columns.length === 0
+                    }
                   >
                     Exportar
                   </button>
@@ -125,7 +286,46 @@ export default function DataPage() {
                 <div
                   id="query-results"
                   className="min-h-20 rounded-lg border border-[#e2e5ea] bg-[#f0f2f5] p-3 text-[12px] text-[#5a6070]"
-                />
+                >
+                  {executeError ? (
+                    <div className="text-[#c0392b]">{executeError}</div>
+                  ) : !result ? (
+                    <div>Ejecuta una consulta para ver resultados.</div>
+                  ) : result.columns.length === 0 ? (
+                    <div>Sin resultados.</div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="border-b border-[#d8dce2]">
+                            {result.columns.map((c) => (
+                              <th
+                                key={c}
+                                className="text-left text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8e95a3] pb-2 pr-3"
+                              >
+                                {c}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {result.rows.slice(0, 200).map((r, idx) => (
+                            <tr
+                              key={idx}
+                              className="border-b border-[#e2e5ea] last:border-0"
+                            >
+                              {result.columns.map((c) => (
+                                <td key={c} className="py-2 pr-3 align-top">
+                                  {String(r[c] ?? "")}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Predefined Queries */}
@@ -134,50 +334,41 @@ export default function DataPage() {
                   Consultas Predefinidas
                 </h3>
                 <div className="flex flex-col gap-2">
-                  {[
-                    {
-                      name: "Casos sin resolver",
-                      desc: "Lista todos los casos activos pendientes de resolución",
-                      preview: `SELECT * FROM casos WHERE estado != "Resuelto"...`,
-                      query: `SELECT * FROM casos WHERE estado != 'Resuelto' ORDER BY fecha_creacion DESC`,
-                    },
-                    {
-                      name: "Técnicos con mayor carga",
-                      desc: "Muestra técnicos ordenados por cantidad de casos activos",
-                      preview: `SELECT tecnico_id, COUNT(*) as total FROM casos...`,
-                      query: `SELECT tecnico_id, COUNT(*) as total FROM casos WHERE estado = 'En Curso' GROUP BY tecnico_id ORDER BY total DESC`,
-                    },
-                    {
-                      name: "Casos por prioridad",
-                      desc: "Distribución de casos según nivel de prioridad",
-                      preview: `SELECT prioridad, COUNT(*) as cantidad FROM casos...`,
-                      query: `SELECT prioridad, COUNT(*) as cantidad FROM casos GROUP BY prioridad`,
-                    },
-                  ].map(({ name, desc, preview, query }) => (
-                    <div
-                      key={name}
-                      data-query={query}
-                      className="sample-query cursor-pointer rounded-lg border border-[#e2e5ea] bg-[#f0f2f5] p-3
+                  {sampleQueries.map(
+                    ({ name, desc, preview, queryId, queryText: qt }) => (
+                      <div
+                        key={name}
+                        data-query={qt}
+                        className="sample-query cursor-pointer rounded-lg border border-[#e2e5ea] bg-[#f0f2f5] p-3
                            hover:border-[#3b6de8]/40 hover:bg-[#e8edf8] transition-all group"
-                    >
-                      <div className="text-[13px] font-semibold text-[#1a1d23] group-hover:text-[#3b6de8] transition-colors">
-                        {name}
+                        onClick={() => {
+                          setSelectedQueryId(queryId);
+                          setQueryText(qt);
+                        }}
+                      >
+                        <div className="text-[13px] font-semibold text-[#1a1d23] group-hover:text-[#3b6de8] transition-colors">
+                          {name}
+                        </div>
+                        <div className="text-[11.5px] text-[#8e95a3] mt-0.5 mb-2">
+                          {desc}
+                        </div>
+                        <code className="block text-[10.5px] text-[#5a6070] font-mono bg-[#e8eaed] rounded px-2 py-1.5 truncate">
+                          {preview}
+                        </code>
                       </div>
-                      <div className="text-[11.5px] text-[#8e95a3] mt-0.5 mb-2">
-                        {desc}
-                      </div>
-                      <code className="block text-[10.5px] text-[#5a6070] font-mono bg-[#e8eaed] rounded px-2 py-1.5 truncate">
-                        {preview}
-                      </code>
-                    </div>
-                  ))}
+                    ),
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
           {/* ── Backup & Restore ── */}
-          <div className="tab-pane hidden" id="backup-tab">
+          <div
+            className={`tab-pane ${activeTab === "backup" ? "" : "hidden"}`}
+            id="backup-tab"
+            role="tabpanel"
+          >
             <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-5">
               {/* Backup Form */}
               <div className="flex flex-col gap-4">
@@ -315,7 +506,11 @@ export default function DataPage() {
           </div>
 
           {/* ── Mantenimiento ── */}
-          <div className="tab-pane hidden" id="mantenimiento-tab">
+          <div
+            className={`tab-pane ${activeTab === "mantenimiento" ? "" : "hidden"}`}
+            id="mantenimiento-tab"
+            role="tabpanel"
+          >
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {[
                 {
@@ -376,7 +571,11 @@ export default function DataPage() {
           </div>
 
           {/* ── Importar / Exportar ── */}
-          <div className="tab-pane hidden" id="importar-tab">
+          <div
+            className={`tab-pane ${activeTab === "importar" ? "" : "hidden"}`}
+            id="importar-tab"
+            role="tabpanel"
+          >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
               <div className="flex flex-col items-center gap-4 rounded-xl border border-[#c8d6f5] bg-[#e8edf8] p-8 text-center">
                 <div className="w-12 h-12 rounded-full bg-[#d0daf8] flex items-center justify-center text-[#3b6de8] text-xl">

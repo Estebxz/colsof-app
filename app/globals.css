@@ -16,8 +16,8 @@
   --accent: oklch(0.8089 0.0529 249.37);
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.65 0.22 25.33);
+  --destructive-foreground: oklch(0.4437 0.1613 26.9);
   --warning: oklch(0.6683 0.1474 61.13);
-  --destructive-foreground: oklch(1 0 0);
   --success: oklch(0.72 0.18 163.22);
   --success-foreground: oklch(1 0 0);
   --sidebar: oklch(0.9364 0.0046 258.33);
@@ -28,6 +28,10 @@
   --font-sans: Inter, sans-serif;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
+  --shadow-xl:      0 20px 48px -12px rgba(0, 0, 0, 0.15),
+                    0 8px 16px -4px rgba(0, 0, 0, 0.08);
+
+  --transition:     all 0.18s ease;
 }
 
 @theme {
@@ -77,6 +81,30 @@
   font-family: "Inter";
   src: url("/fonts/inter-latin-500-normal.woff2") format("woff2");
   font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-800-normal.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-900-normal.woff2") format("woff2");
+  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
@@ -158,7 +186,7 @@ body::before {
 /* ===== Card Principal ===== */
 .card {
   width: 100%;
-  background: var(--panel);
+  background: var(--card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
   padding: clamp(24px, 4vh, 36px) clamp(20px, 4vw, 32px);
@@ -174,9 +202,9 @@ body::before {
 /* ===== Alert ===== */
 .alert {
   display: none;
-  background: var(--alert-bg);
-  border: 1.5px solid var(--alert-border);
-  border-radius: var(--radius-md);
+  background: oklch(27.024% 0.10507 11.382);
+  border: 1.5px solid var(--destructive-foreground);
+  border-radius: 1rem;
   padding: 16px 18px;
   margin-bottom: 24px;
   animation: slideDown 0.3s ease-out;
@@ -188,41 +216,27 @@ body::before {
   display: flex;
 }
 
-.alert-icon {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  color: var(--alert-text);
-}
-
-.alert-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
 .alert-content h2 {
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--alert-text);
+  color: var(--destructive-foreground);
   margin-bottom: 2px;
   letter-spacing: 0.3px;
 }
 
 .alert-content p {
   font-size: 0.8125rem;
-  color: #991b1b;
+  color: var(--destructive-foreground);
   font-weight: 500;
   line-height: 1.4;
 }
 
-/* ===== Formulario ===== */
 .form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* ===== Input Groups ===== */
 .input-group {
   display: flex;
   flex-direction: column;
@@ -241,12 +255,12 @@ body::before {
   width: 100%;
   height: 52px;
   padding: 0 16px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius-sm);
+  border: 2px solid var(--accent);
+  border-radius: 1rem;
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--text-primary);
-  background: var(--panel);
+  background: var(--card);
   transition: var(--transition);
   outline: none;
 }
@@ -263,7 +277,7 @@ body::before {
 }
 
 .input-group input:hover:not(:focus) {
-  border-color: #94a3b8;
+  border-color: var(--border-hover);
 }
 
 .input-group.error input {

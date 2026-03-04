@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Sidebar,
@@ -20,10 +20,43 @@ import { TooltipProvider } from "./tooltip";
 
 import { cn } from "@lib/utils";
 import { UseIcon } from "@hooks/use-icons";
+import { AvatarInitials } from "./avatar";
+
+type UserData = {
+  nombre: string;
+};
 
 function LogoutButton() {
+  const [user, setUser] = useState<UserData | null>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadMe() {
+      try {
+        const res = await fetch("/api/me", { method: "GET" });
+        const json = (await res.json().catch(() => null)) as {
+          data?: UserData;
+          error?: string;
+        } | null;
+
+        if (!res.ok) return;
+        if (!json?.data) return;
+        if (cancelled) return;
+        setUser(json.data);
+      } catch {
+        // ignore
+      }
+    }
+
+    void loadMe();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function onLogout() {
     if (loading) return;
@@ -47,12 +80,12 @@ function LogoutButton() {
   return (
     <SidebarMenuButton
       tooltip="Cerrar sesión"
-      className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-blue-500 group-data-[collapsible=icon]:justify-center cursor-pointer"
+      className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-primary group-data-[collapsible=icon]:justify-center cursor-pointer"
       onClick={onLogout}
       disabled={loading}
       aria-label="Cerrar sesión"
     >
-      <Image src="/default.webp" alt="icon" width={25} height={25} />
+      <AvatarInitials name={user?.nombre || "-"} size="md" />
       <span className="group-data-[collapsible=icon]:hidden">
         {loading ? "Cerrando..." : "Cerrar sesión"}
       </span>
@@ -93,7 +126,7 @@ function MinimalSidebar() {
               </div>
               <span className="group-data-[collapsible=icon]:hidden">
                 <h2 className="font-semibold text-foreground group-data-[collapsible=icon]:hidden">
-                  COLSOF S.A.S
+                  COLSOF
                 </h2>
               </span>
             </Link>
@@ -116,18 +149,20 @@ function MinimalSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Navegar al inicio"
-                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center"
+                  isActive={pathname === "/dashboard"}
+                  className={cn(
+                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
+                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
+                  )}
                 >
                   <Link
                     aria-label="Ir al inicio"
                     href="/dashboard"
-                    data-active={pathname === "/dashboard"}
-                    className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
+                    className={cn(
+                      "flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center",
+                    )}
                   >
-                    <UseIcon
-                      name="home"
-                      className="size-4 shrink-0"
-                    />
+                    <UseIcon name="home" className="size-4 shrink-0" />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Inicio
                     </span>
@@ -139,18 +174,18 @@ function MinimalSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Acceder a Estadisticas"
-                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center"
+                  isActive={pathname === "/statistics"}
+                  className={cn(
+                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
+                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
+                  )}
                 >
                   <Link
                     aria-label="Acceder a Estadisticas"
                     href="/statistics"
-                    data-active={pathname === "/statistics"}
                     className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
                   >
-                    <UseIcon
-                      name="charts"
-                      className="size-4 shrink-0"
-                    />
+                    <UseIcon name="charts" className="size-4 shrink-0" />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Estadisticas
                     </span>
@@ -162,12 +197,15 @@ function MinimalSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Acceder a herramientas BD"
-                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-blue-500 group-data-[collapsible=icon]:justify-center"
+                  isActive={pathname === "/data"}
+                  className={cn(
+                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
+                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
+                  )}
                 >
                   <Link
                     aria-label="Acceder a herramientas BD"
                     href="/data"
-                    data-active={pathname === "/data"}
                     className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
                   >
                     <UseIcon name="db" className="size-4 shrink-0" />
@@ -181,18 +219,18 @@ function MinimalSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Notificaciones"
-                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-blue-500 group-data-[collapsible=icon]:justify-center"
+                  isActive={pathname === "/notification"}
+                  className={cn(
+                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
+                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
+                  )}
                 >
                   <Link
                     aria-label="Notificaciones"
                     href="/notification"
-                    data-active={pathname === "/notification"}
                     className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
                   >
-                    <UseIcon
-                      name="bell"
-                      className="size-4 shrink-0"
-                    />
+                    <UseIcon name="bell" className="size-4 shrink-0" />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Notificaciones
                     </span>

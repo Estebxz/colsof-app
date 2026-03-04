@@ -1,6 +1,94 @@
+"use client";
+
 import { Button } from "@/app/components/ui/button";
+import { useMemo, useState } from "react";
+
+import { useStatistics, type StatisticsRange } from "@hooks/use-statistics";
+
+function formatNumber(n: number) {
+  return n.toLocaleString("es-CO");
+}
+
+function formatHours(hours: number | null) {
+  if (hours === null) return "—";
+  return hours.toFixed(1);
+}
+
+function TrendChart({ points }: { points: { date: string; count: number }[] }) {
+  const W = 600;
+  const H = 200;
+  const PAD = 16;
+
+  const { d, fillD, max } = useMemo(() => {
+    if (!points || points.length === 0) {
+      return { d: "", fillD: "", max: 0 };
+    }
+
+    const maxVal = Math.max(1, ...points.map((p) => p.count));
+    const minVal = 0;
+    const innerW = W - PAD * 2;
+    const innerH = H - PAD * 2;
+
+    const xFor = (i: number) =>
+      PAD + (innerW * i) / Math.max(points.length - 1, 1);
+    const yFor = (v: number) =>
+      PAD + innerH - ((v - minVal) / (maxVal - minVal)) * innerH;
+
+    const path = points
+      .map((p, i) => {
+        const x = xFor(i);
+        const y = yFor(p.count);
+        return `${i === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)}`;
+      })
+      .join(" ");
+
+    const lastX = xFor(points.length - 1);
+    const baselineY = yFor(0);
+    const fill = `${path} L${lastX.toFixed(2)} ${baselineY.toFixed(2)} L${xFor(
+      0,
+    ).toFixed(2)} ${baselineY.toFixed(2)} Z`;
+
+    return { d: path, fillD: fill, max: maxVal };
+  }, [points]);
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
+      <defs>
+        <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#3b6de8" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#3b6de8" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+
+      <rect x="0" y="0" width={W} height={H} fill="transparent" />
+
+      <line
+        x1={PAD}
+        y1={H - PAD}
+        x2={W - PAD}
+        y2={H - PAD}
+        stroke="#d8dce2"
+        strokeWidth="1"
+      />
+
+      {fillD ? <path d={fillD} fill="url(#trendFill)" /> : null}
+      {d ? <path d={d} fill="none" stroke="#3b6de8" strokeWidth="2" /> : null}
+
+      <text x={PAD} y={PAD + 8} fontSize="10" fill="#8e95a3">
+        Máx: {max}
+      </text>
+    </svg>
+  );
+}
 
 export default function StatsPage() {
+  const [range, setRange] = useState<StatisticsRange>("month");
+  const { data, loading, error } = useStatistics(range);
+
+  const total = data?.kpis.total ?? 0;
+  const resueltos = data?.kpis.resueltos ?? 0;
+  const avgHours = data?.kpis.avgResolutionHours ?? null;
+
   return (
     <div className="max-w-full flex flex-col gap-3.5">
       {/* KPIs */}
@@ -13,7 +101,7 @@ export default function StatsPage() {
             id="totalCases"
             className="text-3xl font-semibold tracking-tight text-[#3b6de8]"
           >
-            0
+            {loading ? "—" : formatNumber(total)}
           </strong>
           <small className="text-[11.5px] text-[#8e95a3]">
             Período seleccionado
@@ -28,7 +116,7 @@ export default function StatsPage() {
             id="casosResueltos"
             className="text-3xl font-semibold tracking-tight text-[#2eac76]"
           >
-            0
+            {loading ? "—" : formatNumber(resueltos)}
           </strong>
           <small className="text-[11.5px] text-[#8e95a3]">del total</small>
         </div>
@@ -41,7 +129,7 @@ export default function StatsPage() {
             id="tiempoPromedio"
             className="text-3xl font-semibold tracking-tight text-[#d47c1a]"
           >
-            0
+            {loading ? "—" : formatHours(avgHours)}
           </strong>
           <small className="text-[11.5px] text-[#8e95a3]">horas</small>
         </div>
@@ -60,29 +148,37 @@ export default function StatsPage() {
         </div>
       </section>
 
+      {error ? (
+        <div className="text-xs text-[#c0392b] px-1">{error}</div>
+      ) : null}
+
       {/* Filtros */}
       <section className="flex flex-wrap gap-2 bg-[#eef0f3] border border-[#e2e5ea] rounded-xl p-2">
         <Button
           variant="outline"
           className="bg-background border-border text-foreground hover:bg-[#e2e5ea] hover:text-foreground text-xs font-medium rounded-lg"
+          onClick={() => setRange("week")}
         >
           Última semana
         </Button>
         <Button
           variant="outline"
           className="bg-background border-border text-foreground hover:bg-[#e2e5ea] hover:text-foreground text-xs font-medium rounded-lg"
+          onClick={() => setRange("month")}
         >
           Último mes
         </Button>
         <Button
           variant="outline"
           className="bg-background border-border text-foreground hover:bg-[#e2e5ea] hover:text-foreground text-xs font-medium rounded-lg"
+          onClick={() => setRange("quarter")}
         >
           Trimestre
         </Button>
         <Button
           variant="outline"
           className="bg-background border-border text-foreground hover:bg-[#e2e5ea] hover:text-foreground text-xs font-medium rounded-lg"
+          onClick={() => setRange("year")}
         >
           Año
         </Button>
@@ -111,11 +207,15 @@ export default function StatsPage() {
           <h2 className="text-[13.5px] font-semibold text-[#1a1d23] mb-4">
             Tendencia de Casos
           </h2>
-          <svg
-            id="trendChart"
-            viewBox="0 0 600 200"
-            className="w-full h-auto"
-          />
+          {loading ? (
+            <div className="text-xs text-[#8e95a3]">Cargando…</div>
+          ) : (data?.trend?.length || 0) === 0 ? (
+            <div className="text-xs text-[#8e95a3]">
+              Sin datos para graficar.
+            </div>
+          ) : (
+            <TrendChart points={data?.trend || []} />
+          )}
         </div>
 
         <div className="bg-[#eef0f3] border border-[#e2e5ea] rounded-xl p-5 shadow-sm">

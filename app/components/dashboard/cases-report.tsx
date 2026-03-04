@@ -533,13 +533,8 @@ export default function CasesReport() {
           {TIME_RANGES.map(({ value, label }) => (
             <Button
               key={value}
-              variant="outline"
+              variant={timeRange === value ? "secondary" : "ghost"}
               size="sm"
-              className={
-                timeRange === value
-                  ? "bg-background border-border text-foreground hover:bg-white/50 hover:text-foreground font-medium rounded-lg text-xs px-2.5"
-                  : "bg-slate-200 border-slate-200 text-foreground hover:bg-slate-100 hover:text-foreground font-medium rounded-lg text-xs px-2.5"
-              }
               onClick={() => setTimeRange(value)}
               disabled={casosLoading}
               aria-pressed={timeRange === value}
@@ -550,12 +545,12 @@ export default function CasesReport() {
 
           <Button
             size="sm"
-            className="ml-auto bg-[#3b6de8] border-[#3b6de8] text-background hover:bg-[#2d5cd4] hover:text-background text-xs font-medium rounded-lg flex items-center gap-1.5 cursor-pointer"
+            variant="info"
             onClick={onExportCsv}
             disabled={casosLoading || !!casosError || casos.length === 0}
             aria-label="Exportar datos como CSV"
           >
-            <UseIcon name="download" className="size-5 shrink-0 text-white" />
+            <UseIcon name="download" className="size-5 shrink-0 text-background" />
             <span>Exportar CSV</span>
           </Button>
         </div>
