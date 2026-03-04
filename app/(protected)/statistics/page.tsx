@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Button } from "@ui/button";
-import { StatCard } from "@ui/stat-card";
+import { StatCard } from "@shared/stat-card";
 import { TrendAreaChart } from "@ui/trend-area-chart";
 
 import { useStatistics, type StatisticsRange } from "@hooks/use-statistics";
@@ -30,10 +30,30 @@ export default function StatsPage() {
 
   const statCards = useMemo(
     () => [
-      { title: "Total Casos", value: total, color: "var(--ring)", statusLabel: "Período seleccionado" },
-      { title: "Casos Resueltos", value: resueltos, color: "var(--success)", statusLabel: "del total" },
-      { title: "Tiempo Promedio", value: avgHours === null ? "—" : formatHours(avgHours), color: "var(--muted-foreground)", statusLabel: "horas" },
-      { title: "Satisfacción", value: 4.5, color: "#7c5cbf", statusLabel: "★★★★★" },
+      {
+        title: "Total Casos",
+        value: total,
+        color: "var(--ring)",
+        statusLabel: "Período seleccionado",
+      },
+      {
+        title: "Casos Resueltos",
+        value: resueltos,
+        color: "var(--success)",
+        statusLabel: "del total",
+      },
+      {
+        title: "Tiempo Promedio",
+        value: avgHours === null ? "—" : formatHours(avgHours),
+        color: "var(--muted-foreground)",
+        statusLabel: "horas",
+      },
+      {
+        title: "Satisfacción",
+        value: 4.5,
+        color: "#7c5cbf",
+        statusLabel: "★★★★★",
+      },
     ],
     [avgHours, resueltos, total],
   );

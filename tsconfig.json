@@ -22,7 +22,11 @@
       "@api/*": ["./app/api/*"],
       "@ui/*": ["./app/components/ui/*"],
       "@lib/*": ["./app/lib/*"],
-      "@public/*": ["./public/*"]
+      "@public/*": ["./public/*"],
+      "@charts/*": ["./app/components/charts/*"],
+      "@shared/*": ["./app/components/shared/*"],
+      "@dashboard/*": ["./app/components/dashboard/*"],
+      "@layout/*": ["./app/components/layout/*"]
     }
   },
   "include": [

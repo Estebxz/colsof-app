@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/app/components/ui/button";
-import { StatCard } from "@/app/components/ui/stat-card";
+import { Button } from "@ui/button";
+import { StatCard } from "@shared/stat-card";
 import { useMemo, useState } from "react";
 
 type TabKey = "consultas" | "backup" | "mantenimiento" | "importar";
@@ -167,14 +167,14 @@ export default function DataPage() {
             value: "45d 12h",
             accent: "text-[#0e9ab5]",
           },
-        ].map(({ label, id, value, accent}) => (
+        ].map(({ label, id, value, accent }) => (
           <div key={id}>
-            <StatCard 
-            title={label} 
-            value={value} 
-            color={accent}
-            variant="success"
-            pulse={true}
+            <StatCard
+              title={label}
+              value={value}
+              color={accent}
+              variant="success"
+              pulse={true}
             />
           </div>
         ))}

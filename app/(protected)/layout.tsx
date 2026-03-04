@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SidebarProvider } from "@ui/aside";
-import MinimalSidebar from "@ui/integration-sidebar";
-import { StatusBar } from "@components/status-bar";
+import MinimalSidebar from "@shared/integration-sidebar";
+import { StatusBar } from "@layout/status-bar";
 import { getSessionUser } from "@/app/server/auth/session";
 import { redirect } from "next/navigation";
 

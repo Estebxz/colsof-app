@@ -1,6 +1,6 @@
 "use client";
 
-import { ChartTooltip } from "@ui/char-tooltip";
+import { ChartTooltip } from "@/app/components/charts/char-tooltip";
 import { useId, useMemo } from "react";
 import {
   Area,
@@ -70,11 +70,7 @@ export function TrendAreaChart({
 
         <Tooltip
           cursor={{ stroke: "var(--muted-foreground)", strokeDasharray: "4 3" }}
-          content={
-            <ChartTooltip
-              nameFormatter={() => seriesLabel}
-            />
-          }
+          content={<ChartTooltip nameFormatter={() => seriesLabel} />}
         />
 
         <Area

@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { LoginUserProps } from "@type/types";
 import { Badge } from "@ui/badges";
-import { HomeLogo } from "@ui/home-logo";
-import { Button } from "./ui/button";
+import { HomeLogo } from "@/app/components/shared/home-logo";
+import { Button } from "@ui/button";
+import { supportWhatsapp } from "@lib/constants";
 
 function validateEmail(email: string) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -24,9 +25,6 @@ function normalizeRole(role: LoginUserProps["rol"]) {
 
   return r;
 }
-
-const supportMessage = encodeURIComponent("Hola, encontré un error en la aplicacion colsof.app...");
-const supportWhatsapp = `https://wa.me/573124670836?text=${supportMessage}`;
 
 export default function SignInCard() {
   const router = useRouter();

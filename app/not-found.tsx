@@ -1,18 +1,16 @@
-import { UseIcon } from "./hooks/use-icons";
-import Header from "./components/header";
-import Footer from "./components/footer";
-import { Button } from "./components/ui/button";
+import { UseIcon } from "@hooks/use-icons";
+import Header from "@layout/header";
+import Footer from "@layout/footer";
+import { Button } from "@ui/button";
 import Link from "next/link";
 import { getSessionUser } from "@/app/server/auth/session";
-
-const supportMessage = encodeURIComponent("Hola, encontré un error en la aplicacion colsof.app...");
-const supportWhatsapp = `https://wa.me/573124670836?text=${supportMessage}`;
+import { supportWhatsapp } from "@lib/constants";
 
 export default async function NotFound() {
   const user = await getSessionUser();
   return (
     <div className="min-h-screen flex flex-col">
-      <Header userName={user?.nombre}/>
+      <Header userName={user?.nombre} />
       <main className="flex flex-1 items-center justify-center px-6">
         <section className="text-center">
           <p className="text-base font-semibold text-blue-600">404</p>

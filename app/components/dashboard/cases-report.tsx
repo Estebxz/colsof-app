@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { Button } from "@ui/button";
-import { CustomLegend } from "@ui/legend";
+import { CustomLegend } from "@/app/components/charts/legend";
 import { UseIcon } from "@hooks/use-icons";
 import { CasesAreaChart } from "@ui/cases-area-chart";
 import { useCasos } from "@hooks/use-casos";

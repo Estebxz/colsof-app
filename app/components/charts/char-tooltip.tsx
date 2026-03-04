@@ -1,27 +1,11 @@
 import { cn } from "@lib/utils";
-
-type NameFormatter = (name: string) => string;
-type ValueFormatter = (value: unknown) => string;
-type LabelFormatter = (label: unknown) => string;
-
-type TooltipPayloadItem = {
-  name?: string | number;
-  value?: unknown;
-  color?: string;
-  stroke?: string;
-  fill?: string;
-  dataKey?: string | number;
-};
-
-export type ChartTooltipProps = {
-  active?: boolean;
-  payload?: TooltipPayloadItem[];
-  label?: unknown;
-  className?: string;
-  labelFormatter?: LabelFormatter;
-  nameFormatter?: NameFormatter;
-  valueFormatter?: ValueFormatter;
-};
+import type {
+  ChartTooltipProps,
+  TooltipPayloadItem,
+  LabelFormatter,
+  NameFormatter,
+  ValueFormatter,
+} from "@type/charts";
 
 const defaultLabelFormatter: LabelFormatter = (label) => {
   if (label === null || label === undefined) return "";

@@ -15,12 +15,12 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarRail,
-} from "./aside";
-import { TooltipProvider } from "./tooltip";
+} from "../ui/aside";
+import { TooltipProvider } from "../ui/tooltip";
 
 import { cn } from "@lib/utils";
 import { UseIcon } from "@hooks/use-icons";
-import { AvatarInitials } from "./avatar";
+import { AvatarInitials } from "../ui/avatar";
 
 type UserData = {
   nombre: string;

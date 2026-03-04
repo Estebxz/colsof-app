@@ -1,5 +1,5 @@
-import SignInCard from "@components/sign-in-card";
-import Footer from "@components/footer";
+import SignInCard from "@shared/sign-in-card";
+import Footer from "@layout/footer";
 
 export default function SignInPage() {
   return (

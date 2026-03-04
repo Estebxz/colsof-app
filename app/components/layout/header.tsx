@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { AvatarInitials } from "./ui/avatar";
+import { AvatarInitials } from "../ui/avatar";
 
 type HeaderProps = {
   userName?: string | null;
@@ -27,9 +27,7 @@ export default function Header({ userName }: HeaderProps) {
         <h1 className="font-semibold text-foreground uppercase">Colsof</h1>
       </Link>
 
-      {initial ? (
-        <AvatarInitials name={initial} />
-      ) : null}
+      {initial ? <AvatarInitials name={initial} /> : null}
     </header>
   );
 }
