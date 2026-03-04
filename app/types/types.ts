@@ -1,3 +1,5 @@
+import type React from "react";
+
 export type LoginUserProps = {
   id: string | number;
   nombre?: string;
@@ -7,6 +9,7 @@ export type LoginUserProps = {
 };
 
 export type Role = "Administrador" | "Gestor" | "Tecnico" | (string & {});
+export type EstadoUsuario = "Activo" | "Inactivo" | "Suspendido";
 
 export type IconName =
   | "arrow-left"
@@ -34,11 +37,51 @@ export type IconName =
   | "terminal"
   | "spinner"
   | "download"
-  | "whatsapp";
+  | "whatsapp"
+  | "arrow-prev-small"
+  | "dot-menu";
 
 export type DashboardStats = {
   solucionados: number;
   creados: number;
   enPausa: number;
   cerrados: number;
+};
+
+export type DropdownSelectProps<T extends string> = {
+  value: T | null;
+  onValueChange: (value: T | null) => void;
+  options: DropdownSelectOption<T>[];
+  placeholder: string;
+  allLabel?: string;
+  disabled?: boolean;
+  className?: string;
+  contentClassName?: string;
+};
+
+type DropdownSelectOption<T extends string> = {
+  value: T;
+  label: string;
+  disabled?: boolean;
+};
+
+export type DataTableColumn<T> = {
+  key: string;
+  header: React.ReactNode;
+  cell: (row: T) => React.ReactNode;
+  headerClassName?: string;
+  cellClassName?: string;
+};
+
+export type DataTableProps<T> = {
+  data: T[];
+  columns: Array<DataTableColumn<T>>;
+  getRowId: (row: T) => string;
+  rowClassName?: (row: T, index: number) => string | undefined;
+  loading?: boolean;
+  error?: string | null;
+  emptyText?: string;
+  className?: string;
+  tableClassName?: string;
+  bodyClassName?: string;
 };

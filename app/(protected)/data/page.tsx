@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/app/components/ui/button";
+import { StatCard } from "@/app/components/ui/stat-card";
 import { useMemo, useState } from "react";
 
 type TabKey = "consultas" | "backup" | "mantenimiento" | "importar";
@@ -140,59 +142,46 @@ export default function DataPage() {
             id: "tables-count",
             value: "24",
             accent: "text-[#3b6de8]",
-            bar: "bg-[#3b6de8]",
           },
           {
             label: "Registros",
             id: "records-count",
             value: "156,789",
             accent: "text-[#2eac76]",
-            bar: "bg-[#2eac76]",
           },
           {
             label: "Tamaño Total",
             id: "db-size",
             value: "2.4 GB",
             accent: "text-[#7c5cbf]",
-            bar: "bg-[#7c5cbf]",
           },
           {
             label: "Último Backup",
             id: "last-backup",
             value: "2026-01-19 08:00",
             accent: "text-[#d47c1a]",
-            bar: "bg-[#d47c1a]",
           },
           {
             label: "Uptime",
             id: "uptime",
             value: "45d 12h",
             accent: "text-[#0e9ab5]",
-            bar: "bg-[#0e9ab5]",
           },
-        ].map(({ label, id, value, accent, bar }) => (
-          <div
-            key={id}
-            className="bg-[#eef0f3] border border-[#e2e5ea] rounded-xl px-4 py-3.5 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-1.5"
-          >
-            <span className="text-[10.5px] font-semibold uppercase tracking-widest text-[#8e95a3]">
-              {label}
-            </span>
-            <span
-              id={id}
-              className={`text-xl font-semibold tracking-tight leading-none ${accent}`}
-            >
-              {value}
-            </span>
-            <div
-              className={`h-0.5 w-8 rounded-full ${bar} opacity-40 mt-0.5`}
+        ].map(({ label, id, value, accent}) => (
+          <div key={id}>
+            <StatCard 
+            title={label} 
+            value={value} 
+            color={accent}
+            variant="success"
+            pulse={true}
             />
           </div>
         ))}
       </div>
 
       {/* Tabs Container */}
-      <div className="bg-[#eef0f3] border border-[#e2e5ea] rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-[#eef0f3] border border-[#e2e5ea] rounded-xl shadow-sm overflow-hidden mt-10">
         {/* Tabs Navigation */}
         <div
           className="flex border-b border-[#e2e5ea] bg-[#e8eaed] px-1 pt-1 gap-0.5"
@@ -249,25 +238,28 @@ export default function DataPage() {
                   onChange={(e) => setQueryText(e.target.value)}
                 />
                 <div className="flex items-center gap-2">
-                  <button
+                  <Button
                     id="execute-query"
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#3b6de8] text-[#eef0f3] text-[12.5px] font-medium hover:bg-[#2d5cd4] transition-colors"
+                    variant="info"
+                    size="sm"
                     onClick={onExecute}
                     disabled={executeLoading}
                   >
                     {executeLoading ? "Ejecutando…" : "Ejecutar Consulta"}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     id="clear-query"
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#f0f2f5] border border-[#d8dce2] text-[#5a6070] text-[12.5px] font-medium hover:bg-[#e2e5ea] transition-colors"
+                    variant="secondary"
+                    size="sm"
                     onClick={onClear}
                     disabled={executeLoading}
                   >
                     Limpiar
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     id="export-results"
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#d4f0e5] border border-[#b8e4d0] text-[#1a7a52] text-[12.5px] font-medium hover:bg-[#c0e8d6] transition-colors"
+                    variant="link"
+                    size="sm"
                     onClick={() => {
                       if (!result || result.columns.length === 0) return;
                       downloadCsv(
@@ -281,7 +273,7 @@ export default function DataPage() {
                     }
                   >
                     Exportar
-                  </button>
+                  </Button>
                 </div>
                 <div
                   id="query-results"

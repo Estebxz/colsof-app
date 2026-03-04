@@ -20,7 +20,14 @@ export default function DashboardStatCards() {
   return (
     <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
       {statCards.map((stat) => (
-        <StatCard key={stat.title} loading={loading} error={error} {...stat} />
+        <StatCard 
+        key={stat.title} 
+        variant="success" 
+        pulse={true} 
+        loading={loading} 
+        error={error} 
+        {...stat} 
+        />
       ))}
     </section>
   );

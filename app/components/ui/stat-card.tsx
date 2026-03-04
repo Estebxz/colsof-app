@@ -12,6 +12,8 @@ interface StatCardProps {
   className?: string;
   icon?: React.ReactNode;
   statusLabel?: string;
+  variant?: "default" | "success" | "destructive" | "warning" | "info" | "outline" | "ghost" | "secondary";
+  pulse?: boolean;
 }
 
 export function StatCard({
@@ -23,6 +25,8 @@ export function StatCard({
   className,
   icon,
   statusLabel = "Actualizado",
+  variant = "default",
+  pulse = false,
 }: StatCardProps) {
   const displayValue = loading
     ? "—"
@@ -57,7 +61,7 @@ export function StatCard({
           {error}
         </p>
       ) : (
-        <Badge variant="success" size="sm" pulse>
+        <Badge variant={variant} size="sm" pulse={pulse}>
           {loading ? "Cargando..." : statusLabel}
         </Badge>
       )}

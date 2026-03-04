@@ -1,4 +1,5 @@
 import type { IconName } from "@type/types";
+import { cn } from "@lib/utils";
 
 interface IconProps {
   name: IconName;
@@ -8,7 +9,7 @@ interface IconProps {
 export const UseIcon = ({ name, className = "" }: IconProps) => {
   return (
     <svg
-      className={`fill-current ${className}`}
+      className={cn("inline-block fill-current", className)}
       aria-hidden="true"
     >
       <use

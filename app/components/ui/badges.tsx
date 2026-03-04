@@ -16,7 +16,7 @@ const badgeVariants = cva(
 				outline:
 					"border border-foreground/30 bg-transparent text-foreground	py-4",
 				secondary:
-					"bg-secondary text-secondary-foreground",
+					"bg-white text-secondary-foreground hover:bg-white/80",
 				ghost:
 					"bg-muted text-muted-foreground",
 				success:

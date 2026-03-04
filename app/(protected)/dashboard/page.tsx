@@ -9,13 +9,15 @@ import Image from "next/image";
 import { Badge } from "@/app/components/ui/badges";
 import { UseIcon } from "@/app/hooks/use-icons";
 import { AvatarInitials } from "@/app/components/ui/avatar";
+import { DataTable } from "@ui/data-table";
+import Link from "next/link";
 
 export default function Dashboard() {
   const {
     usuarios,
     loading: usuariosLoading,
     error: usuariosError,
-  } = useUsuarios(200);
+  } = useUsuarios({ page: 1, pageSize: 200 });
 
   const usuariosActivos = useMemo(
     () => usuarios.filter((u) => u.activo),
@@ -37,8 +39,8 @@ export default function Dashboard() {
                   Base de datos SQL
                 </p>
               </div>
-              <a
-                href="#"
+              <Link
+                href="/users"
                 className="text-sm text-primary font-medium hover:underline"
               >
                 <div className="flex items-center gap-1 justify-center">
@@ -48,80 +50,85 @@ export default function Dashboard() {
                     className="size-3.5 rotate-y-180"
                   />
                 </div>
-              </a>
+              </Link>
             </div>
 
             <div className="w-full">
-              <div className="hidden sm:grid sm:grid-cols-[60px_1fr_140px_120px_40px] xl:grid-cols-[72px_1fr_160px_140px_48px] text-xs font-semibold text-muted-foreground uppercase border-b border-border pb-3 mb-1 px-1">
-                <div>ID</div>
-                <div>Usuario</div>
-                <div>Estado</div>
-                <div>Rol</div>
-                <div></div>
-              </div>
-
-              {usuariosLoading ? (
-                <div className="py-8 text-sm text-muted-foreground">
-                  Cargando usuarios…
-                </div>
-              ) : usuariosError ? (
-                <div className="py-8 text-sm text-destructive">
-                  {usuariosError}
-                </div>
-              ) : usuarios.length === 0 ? (
-                <div className="py-8 text-sm text-muted-foreground">
-                  Sin usuarios.
-                </div>
-              ) : (
-                usuarios.slice(0, 5).map((user) => (
-                  <div
-                    key={String(user.id)}
-                    className="grid grid-cols-[60px_1fr_140px_120px_40px] xl:grid-cols-[72px_1fr_160px_140px_48px] items-center py-3.5 border-b border-border last:border-0 text-sm px-1 hover:bg-muted/40 rounded-lg transition-colors"
-                  >
-                    <div className="font-medium">{user.id}</div>
-
-                    <div className="flex items-center gap-2.5 min-w-0 pr-0 sm:pr-4">
-                      <AvatarInitials
-                        name={user.nombre || "—"}
-                        className="hidden sm:flex size-8"
-                      />
-                      <div className="min-w-0">
-                        <div className="font-medium truncate">
-                          {user.nombre || "—"}
-                        </div>
-                        <div className="text-xs text-muted-foreground truncate">
-                          {user.email || "—"}
+              <DataTable
+                data={usuarios.slice(0, 5)}
+                loading={usuariosLoading}
+                error={usuariosError}
+                emptyText="Sin usuarios."
+                getRowId={(u) => String(u.id)}
+                columns={[
+                  {
+                    key: "id",
+                    header: "ID",
+                    cell: (u) => (
+                      <span className="font-medium text-foreground">
+                        {u.id}
+                      </span>
+                    ),
+                    headerClassName: "w-[72px]",
+                  },
+                  {
+                    key: "usuario",
+                    header: "Usuario",
+                    cell: (u) => (
+                      <div className="flex items-center gap-2.5 min-w-0 pr-0 sm:pr-4">
+                        <AvatarInitials
+                          name={u.nombre || "—"}
+                          className="hidden sm:flex size-8"
+                        />
+                        <div className="min-w-0">
+                          <div className="font-medium truncate">
+                            {u.nombre || "—"}
+                          </div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {u.email || "—"}
+                          </div>
                         </div>
                       </div>
-                    </div>
-
-                    <div>
+                    ),
+                  },
+                  {
+                    key: "estado",
+                    header: "Estado",
+                    cell: (u) => (
                       <Badge
                         variant={
-                          (user.estado || "").toLowerCase() === "suspendido"
+                          (u.estado || "").toLowerCase() === "suspendido"
                             ? "warning"
-                            : user.activo
+                            : u.activo
                               ? "success"
                               : "destructive"
                         }
                         pulse
                       >
-                        {user.estado || (user.activo ? "Activo" : "Inactivo")}
+                        {u.estado || (u.activo ? "Activo" : "Inactivo")}
                       </Badge>
-                    </div>
-
-                    <div>
-                      <Badge variant="info">{user.rol || "—"}</Badge>
-                    </div>
-
-                    <div className="hidden sm:block text-right">
-                      <button className="size-7 rounded-md hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground cursor-not-allowed">
-                        ⋯
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
+                    ),
+                  },
+                  {
+                    key: "rol",
+                    header: "Rol",
+                    cell: (u) => <Badge variant="info">{u.rol || "—"}</Badge>,
+                  },
+                  {
+                    key: "acciones",
+                    header: "",
+                    headerClassName: "w-[48px]",
+                    cell: () => (
+                      <div className="hidden sm:block text-right">
+                        <button className="size-7 rounded-md hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground cursor-not-allowed">
+                          ⋯
+                        </button>
+                      </div>
+                    ),
+                    cellClassName: "text-right",
+                  },
+                ]}
+              />
             </div>
           </div>
 
@@ -133,8 +140,8 @@ export default function Dashboard() {
                   Conectados recientemente
                 </p>
               </div>
-              <a
-                href="#"
+              <Link
+                href="/users"
                 className="text-sm text-primary font-medium hover:underline"
               >
                 <div className="flex items-center gap-1 justify-center">
@@ -144,7 +151,7 @@ export default function Dashboard() {
                     className="size-3.5 rotate-y-180"
                   />
                 </div>
-              </a>
+              </Link>
             </div>
 
             <div className="space-y-4">

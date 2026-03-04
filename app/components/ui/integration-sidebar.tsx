@@ -218,6 +218,28 @@ function MinimalSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
+                  tooltip="Usuarios"
+                  isActive={pathname === "/users"}
+                  className={cn(
+                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
+                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
+                  )}
+                >
+                  <Link
+                    aria-label="Usuarios"
+                    href="/users"
+                    className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
+                  >
+                    <UseIcon name="user" className="size-4 shrink-0" />
+                    <span className="truncate group-data-[collapsible=icon]:hidden">
+                      Usuarios
+                    </span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
                   tooltip="Notificaciones"
                   isActive={pathname === "/notification"}
                   className={cn(
