@@ -8,6 +8,9 @@ import { Badge } from "@ui/badges";
 import { HomeLogo } from "@shared/home-logo";
 import { Button } from "@ui/button";
 import { supportWhatsapp } from "@lib/constants";
+import { cn } from "@lib/utils";
+
+import styles from "./sign-in-card.module.css";
 
 function validateEmail(email: string) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -151,7 +154,7 @@ export default function SignInCard() {
   }
 
   return (
-    <section className="card w-full max-w-md">
+    <section className={styles.card}>
       <HomeLogo />
       <div className="mb-10">
         <h1 className="font-bold text-2xl">Bienvenido</h1>
@@ -161,14 +164,14 @@ export default function SignInCard() {
       </div>
       {isAlertVisible && (
         <div
-          className="alert show"
+          className={cn(styles.alert, styles.alertShow)}
           id="alertBox"
           role="alert"
           aria-live="polite"
           onClick={hideAlert}
         >
-          <UseIcon name="alert-circle" className="size-6 shrink-0" />
-          <div className="alert-content">
+          <UseIcon name="alert-circle" className={styles.alertIcon} />
+          <div className={styles.alertContent}>
             <h2>Error de autenticación</h2>
             <p>{alertMessage}</p>
           </div>
@@ -176,14 +179,19 @@ export default function SignInCard() {
       )}
 
       <form
-        className="form"
+        className={styles.form}
         id="loginForm"
         noValidate
         aria-label="Formulario de inicio de sesión"
         onSubmit={onSubmit}
       >
-        <div className={`input-group${emailError ? " error" : ""}`}>
-          <label htmlFor="email" className="input-label">
+        <div
+          className={cn(
+            styles.inputGroup,
+            emailError && styles.inputGroupError,
+          )}
+        >
+          <label htmlFor="email" className={styles.inputLabel}>
             Correo Electrónico
           </label>
           <input
@@ -204,11 +212,16 @@ export default function SignInCard() {
           />
         </div>
 
-        <div className={`input-group${passwordError ? " error" : ""}`}>
-          <label htmlFor="password" className="input-label">
+        <div
+          className={cn(
+            styles.inputGroup,
+            passwordError && styles.inputGroupError,
+          )}
+        >
+          <label htmlFor="password" className={styles.inputLabel}>
             Contraseña
           </label>
-          <div className="input-with-icon">
+          <div className={styles.inputWithIcon}>
             <input
               type={showPassword ? "text" : "password"}
               id="password"
@@ -228,7 +241,7 @@ export default function SignInCard() {
 
             <Button
               variant="ghost"
-              className="toggle"
+              className={styles.toggle}
               size="icon"
               aria-label={
                 showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
@@ -246,8 +259,8 @@ export default function SignInCard() {
           </div>
         </div>
 
-        <div className="options">
-          <label className="remember">
+        <div className={styles.options}>
+          <label className={styles.remember}>
             <input
               type="checkbox"
               id="remember"
@@ -266,10 +279,11 @@ export default function SignInCard() {
           {submitting ? "Ingresando..." : "Ingresar"}
         </Button>
 
-        <div className="support">
+        <div className={styles.support}>
+          <span className={styles.separate}>o</span>
           <p>¿No puedes acceder a tu cuenta?</p>
           <a href={supportWhatsapp} target="_blank" rel="noopener noreferrer">
-            <Badge variant="secondary" size="lg" className="bg-white">
+            <Badge variant="secondary" size="lg">
               <UseIcon name="whatsapp" className="size-4" />
               Contactar Soporte
             </Badge>

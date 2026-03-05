@@ -1,7 +1,8 @@
 "use client";
 
-import { ChartTooltip } from "@/app/components/charts/char-tooltip";
 import { useId, useMemo } from "react";
+import type { TrendAreaChartProps } from "@type/charts";
+import { ChartTooltip } from "@charts/char-tooltip";
 import {
   Area,
   AreaChart,
@@ -12,17 +13,6 @@ import {
   YAxis,
 } from "recharts";
 
-export type TrendPoint = {
-  label: string;
-  value: number;
-};
-
-export type TrendAreaChartProps = {
-  points: TrendPoint[];
-  height?: number | `${number}%`;
-  color?: string;
-  seriesLabel?: string;
-};
 
 export function TrendAreaChart({
   points,

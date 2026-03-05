@@ -59,3 +59,15 @@ export type UseCasosResult = {
   error: string | null;
   refresh: () => Promise<void>;
 };
+
+export type TrendPoint = {
+  label: string;
+  value: number;
+};
+
+export type TrendAreaChartProps = {
+  points: TrendPoint[];
+  height?: number | `${number}%`;
+  color?: string;
+  seriesLabel?: string;
+};

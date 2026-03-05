@@ -1,6 +1,6 @@
 "use client";
 
-import { ChartTooltip } from "@/app/components/charts/char-tooltip";
+import { ChartTooltip } from "@charts/char-tooltip";
 import { useId, useMemo } from "react";
 import {
   Area,

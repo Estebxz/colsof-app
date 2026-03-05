@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Button } from "@ui/button";
 import { CustomLegend } from "@charts/legend";
 import { UseIcon } from "@hooks/use-icons";
-import { CasesAreaChart } from "@ui/cases-area-chart";
+import { CasesAreaChart } from "@/app/components/dashboard/cases-area-chart";
 import { useCasos } from "@hooks/use-casos";
 import type { TimeRange, ChartData } from "@type/charts";
 

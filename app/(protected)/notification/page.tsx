@@ -35,7 +35,7 @@ const stats: statsProps[] = [
   {
     label: "Seguridad",
     value: 1,
-    icon: "trash",
+    icon: "bell",
     variant: "security",
   },
   {
