@@ -1,7 +1,7 @@
-import { Button } from "@/app/components/ui/button";
-import { UseIcon } from "@/app/hooks/use-icons";
-import { cn } from "@/app/lib/utils";
-import { IconName } from "@/app/types/types";
+import { Button } from "@ui/button";
+import { UseIcon } from "@hooks/use-icons";
+import { cn } from "@lib/utils";
+import { IconName } from "@type/ui";
 
 export interface statsProps {
   label: string;

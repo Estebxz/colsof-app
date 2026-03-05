@@ -5,8 +5,9 @@ import { Button } from "@ui/button";
 import { StatCard } from "@shared/stat-card";
 import { TrendAreaChart } from "@ui/trend-area-chart";
 
-import { useStatistics, type StatisticsRange } from "@hooks/use-statistics";
+import { useStatistics } from "@hooks/use-statistics";
 import { UseIcon } from "@hooks/use-icons";
+import { StatisticsRange } from "@type/statistics";
 
 const STAT_RANGES: { value: StatisticsRange; label: string }[] = [
   { value: "year", label: "Año" },
