@@ -3,7 +3,7 @@ import Header from "@layout/header";
 import Footer from "@layout/footer";
 import { Button } from "@ui/button";
 import Link from "next/link";
-import { getSessionUser } from "@/app/server/auth/session";
+import { getSessionUser } from "@auth/session";
 import { supportWhatsapp } from "@lib/constants";
 
 export default async function NotFound() {

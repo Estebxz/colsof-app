@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
-import type { SessionUser, SessionPayload } from "@type/types";
+import type { SessionUser, SessionPayload } from "@type/auth";
 import { COOKIE_NAME } from "@lib/constants";
 
 function getSecret() {

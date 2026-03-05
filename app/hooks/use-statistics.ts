@@ -1,27 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-
-export type StatisticsRange = "week" | "month" | "quarter" | "year";
-
-export type StatisticsData = {
-  range: StatisticsRange;
-  from: string;
-  kpis: {
-    total: number;
-    resueltos: number;
-    avgResolutionHours: number | null;
-  };
-  trend: { date: string; count: number }[];
-  truncated: boolean;
-};
-
-type UseStatisticsResult = {
-  data: StatisticsData | null;
-  loading: boolean;
-  error: string | null;
-  refresh: () => Promise<void>;
-};
+import type { StatisticsRange, StatisticsData, UseStatisticsResult } from "@type/statistics";
 
 export function useStatistics(range: StatisticsRange): UseStatisticsResult {
   const [data, setData] = useState<StatisticsData | null>(null);

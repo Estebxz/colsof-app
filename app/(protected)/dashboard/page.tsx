@@ -4,12 +4,12 @@ import { useMemo } from "react";
 
 import { useUsuarios } from "@hooks/use-usuarios";
 import { UseIcon } from "@hooks/use-icons";
-import DashboardStatCards from "@/app/components/dashboard/dashboard-stat-cards";
-import CasesReport from "@/app/components/dashboard/cases-report";
-import Image from "next/image";
+import DashboardStatCards from "@dashboard/dashboard-stat-cards";
+import CasesReport from "@dashboard/cases-report";
 import { Badge } from "@ui/badges";
 import { AvatarInitials } from "@ui/avatar";
 import { DataTable } from "@ui/data-table";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Dashboard() {

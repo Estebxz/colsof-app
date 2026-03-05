@@ -3,21 +3,11 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { Button } from "@ui/button";
-import { CustomLegend } from "@/app/components/charts/legend";
+import { CustomLegend } from "@charts/legend";
 import { UseIcon } from "@hooks/use-icons";
 import { CasesAreaChart } from "@ui/cases-area-chart";
 import { useCasos } from "@hooks/use-casos";
-
-type TimeRange = "12m" | "6m" | "30d" | "7d";
-
-type ChartData = {
-  labels: string[];
-  created: number[];
-  resolved: number[];
-  totalCreated: number;
-  totalResolved: number;
-  subtitle: string;
-};
+import type { TimeRange, ChartData } from "@type/charts";
 
 const TIME_RANGES: { value: TimeRange; label: string }[] = [
   { value: "12m", label: "12 Meses" },

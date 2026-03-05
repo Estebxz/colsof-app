@@ -1,20 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-
-export type Caso = {
-  id: number | string | null;
-  estado: string | null;
-  fecha_creacion: string | null;
-  fecha_actualizacion: string | null;
-};
-
-type UseCasosResult = {
-  casos: Caso[];
-  loading: boolean;
-  error: string | null;
-  refresh: () => Promise<void>;
-};
+import { UseCasosResult, Caso } from "@type/charts";
 
 export function useCasos(limit = 2000): UseCasosResult {
   const [casos, setCasos] = useState<Caso[]>([]);

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useDashboardStats } from "@hooks/use-dashboard-stats";
-import { StatCard } from "@/app/components/shared/stat-card";
+import { StatCard } from "@shared/stat-card";
 
 export default function DashboardStatCards() {
   const { stats, loading, error } = useDashboardStats();

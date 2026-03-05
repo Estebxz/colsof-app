@@ -3,7 +3,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { UseIcon } from "@hooks/use-icons";
 import { cn } from "@lib/utils";
 import { Button } from "@ui/button";
-import type { DropdownSelectProps } from "@type/types";
+import type { DropdownSelectProps } from "@type/ui";
 
 export function DropdownSelect<T extends string>({
   value,

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { setSession } from "@/app/server/auth/session";
+import { setSession } from "@auth/session";
 import { createSupabaseAdminClient } from "@/app/server/db/supabase";
 import { loginSchema } from "@/app/server/schemas/auth";
 

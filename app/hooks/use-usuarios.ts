@@ -1,35 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-
-export type Usuario = {
-  id: number | string;
-  nombre: string | null;
-  email: string | null;
-  rol: string | null;
-  estado: string | null;
-  activo: boolean;
-};
-
-export type UsuariosFilters = {
-  rol?: string | null;
-  estado?: string | null;
-  q?: string | null;
-};
-
-export type UsuariosMeta = {
-  page: number;
-  pageSize: number;
-  total: number | null;
-};
-
-type UseUsuariosResult = {
-  usuarios: Usuario[];
-  meta: UsuariosMeta | null;
-  loading: boolean;
-  error: string | null;
-  refresh: () => Promise<void>;
-};
+import type { UseUsuariosResult, UsuariosFilters, UsuariosMeta, Usuario } from "@type/user";
 
 export function useUsuarios({
   page = 1,

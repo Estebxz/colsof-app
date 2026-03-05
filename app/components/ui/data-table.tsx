@@ -1,5 +1,5 @@
 import { cn } from "@lib/utils";
-import type { DataTableProps } from "@type/types";
+import type { DataTableProps } from "@type/ui";
 
 export function DataTable<T>({
   data,

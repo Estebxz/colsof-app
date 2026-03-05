@@ -1,4 +1,4 @@
-import type { IconName } from "@type/types";
+import type { IconName } from "@type/ui";
 import { cn } from "@lib/utils";
 
 interface IconProps {

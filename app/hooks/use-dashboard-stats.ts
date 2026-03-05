@@ -1,15 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-
-import type { DashboardStats } from "@type/types";
-
-type UseDashboardStatsResult = {
-  stats: DashboardStats | null;
-  loading: boolean;
-  error: string | null;
-  refresh: () => Promise<void>;
-};
+import type { DashboardStats, UseDashboardStatsResult } from "@type/charts";
 
 export function useDashboardStats(): UseDashboardStatsResult {
   const [stats, setStats] = useState<DashboardStats | null>(null);

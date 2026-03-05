@@ -3,9 +3,9 @@
 import { UseIcon } from "@hooks/use-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import type { LoginUserProps } from "@type/types";
+import type { LoginUserProps } from "@type/auth";
 import { Badge } from "@ui/badges";
-import { HomeLogo } from "@/app/components/shared/home-logo";
+import { HomeLogo } from "@shared/home-logo";
 import { Button } from "@ui/button";
 import { supportWhatsapp } from "@lib/constants";
 

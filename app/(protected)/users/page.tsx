@@ -8,7 +8,7 @@ import { AvatarInitials } from "@ui/avatar";
 import { DataTable } from "@ui/data-table";
 import { DropdownSelect } from "@ui/dropdown-menu";
 
-import type { Role, EstadoUsuario } from "@type/types";
+import type { Role, EstadoUsuario } from "@type/user";
 import { useUsuarios } from "@hooks/use-usuarios";
 
 function normalizeString(v: string) {

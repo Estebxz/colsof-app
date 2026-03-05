@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { getSessionUser } from "@/app/server/auth/session";
+import { getSessionUser } from "@auth/session";
 import { createSupabaseAdminClient } from "@/app/server/db/supabase";
+import { StatisticsRange } from "@type/statistics";
 
-type RangeKey = "week" | "month" | "quarter" | "year";
-
-function getRangeStart(range: RangeKey) {
+function getRangeStart(range: StatisticsRange) {
   const now = new Date();
   const d = new Date(now);
 
@@ -34,8 +33,8 @@ export async function GET(req: Request) {
 
   try {
     const url = new URL(req.url);
-    const rangeParam = (url.searchParams.get("range") || "month") as RangeKey;
-    const range: RangeKey =
+    const rangeParam = (url.searchParams.get("range") || "month") as StatisticsRange;
+    const range: StatisticsRange =
       rangeParam === "week" ||
       rangeParam === "month" ||
       rangeParam === "quarter" ||

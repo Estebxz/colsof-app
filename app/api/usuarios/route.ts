@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getSessionUser } from "@/app/server/auth/session";
+import { getSessionUser } from "@auth/session";
 import { createSupabaseAdminClient } from "@/app/server/db/supabase";
 
 function parseIntParam(v: string | null, fallback: number) {

@@ -3,7 +3,7 @@ import Header from "@layout/header";
 import { AvatarInitials } from "@ui/avatar";
 import { Button } from "@ui/button";
 import { Badge } from "@ui/badges";
-import { getSessionUser } from "@/app/server/auth/session";
+import { getSessionUser } from "@auth/session";
 import { UseIcon } from "@hooks/use-icons";
 import Link from "next/link";
 

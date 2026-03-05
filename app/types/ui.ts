@@ -1,16 +1,3 @@
-import type React from "react";
-
-export type LoginUserProps = {
-  id: string | number;
-  nombre?: string;
-  apellido?: string;
-  email: string;
-  rol?: Role;
-};
-
-export type Role = "Administrador" | "Gestor" | "Tecnico" | (string & {});
-export type EstadoUsuario = "Activo" | "Inactivo" | "Suspendido";
-
 export type IconName =
   | "arrow-left"
   | "arrow-right"
@@ -41,11 +28,10 @@ export type IconName =
   | "arrow-prev-small"
   | "dot-menu";
 
-export type DashboardStats = {
-  solucionados: number;
-  creados: number;
-  enPausa: number;
-  cerrados: number;
+type DropdownSelectOption<T extends string> = {
+  value: T;
+  label: string;
+  disabled?: boolean;
 };
 
 export type DropdownSelectProps<T extends string> = {
@@ -57,12 +43,6 @@ export type DropdownSelectProps<T extends string> = {
   disabled?: boolean;
   className?: string;
   contentClassName?: string;
-};
-
-type DropdownSelectOption<T extends string> = {
-  value: T;
-  label: string;
-  disabled?: boolean;
 };
 
 export type DataTableColumn<T> = {
@@ -84,17 +64,4 @@ export type DataTableProps<T> = {
   className?: string;
   tableClassName?: string;
   bodyClassName?: string;
-};
-
-export type SessionUser =
- {
-  id: string;
-  nombre: string;
-  apellido: string;
-  email: string;
-  rol: Role;
-};
-
-export type SessionPayload = {
-  user: SessionUser;
 };
