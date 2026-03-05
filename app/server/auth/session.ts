@@ -1,23 +1,11 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
-import type { Role } from "@type/types";
-
-const COOKIE_NAME = "colsof_session";
-
-type SessionUser = {
-  id: string;
-  nombre: string;
-  apellido: string;
-  email: string;
-  rol: Role;
-};
-
-type SessionPayload = {
-  user: SessionUser;
-};
+import type { SessionUser, SessionPayload } from "@type/types";
+import { COOKIE_NAME } from "@lib/constants";
 
 function getSecret() {
-  const secret = process.env.AUTH_SECRET || "colsof_secret";
+  const secret = process.env.AUTH_SECRET;
+  if (!secret) { throw new Error("AUTH_SECRET requerido"); }
   return new TextEncoder().encode(secret);
 }
 
@@ -62,5 +50,3 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     return null;
   }
 }
-
-export type { SessionUser };

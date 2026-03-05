@@ -85,3 +85,16 @@ export type DataTableProps<T> = {
   tableClassName?: string;
   bodyClassName?: string;
 };
+
+export type SessionUser =
+ {
+  id: string;
+  nombre: string;
+  apellido: string;
+  email: string;
+  rol: Role;
+};
+
+export type SessionPayload = {
+  user: SessionUser;
+};

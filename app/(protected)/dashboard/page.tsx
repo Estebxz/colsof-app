@@ -3,12 +3,12 @@
 import { useMemo } from "react";
 
 import { useUsuarios } from "@hooks/use-usuarios";
+import { UseIcon } from "@hooks/use-icons";
 import DashboardStatCards from "@/app/components/dashboard/dashboard-stat-cards";
 import CasesReport from "@/app/components/dashboard/cases-report";
 import Image from "next/image";
-import { Badge } from "@/app/components/ui/badges";
-import { UseIcon } from "@/app/hooks/use-icons";
-import { AvatarInitials } from "@/app/components/ui/avatar";
+import { Badge } from "@ui/badges";
+import { AvatarInitials } from "@ui/avatar";
 import { DataTable } from "@ui/data-table";
 import Link from "next/link";
 
