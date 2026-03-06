@@ -1,13 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { Button } from "@ui/button";
 import { StatCard } from "@shared/stat-card";
-import { TrendAreaChart } from "@ui/trend-area-chart";
+import type { TrendAreaChartProps } from "@type/charts";
 
 import { useStatistics } from "@hooks/use-statistics";
 import { UseIcon } from "@hooks/use-icons";
 import { StatisticsRange } from "@type/statistics";
+
+const TrendAreaChart = dynamic<TrendAreaChartProps>(
+  () => import("@ui/trend-area-chart"),
+  {
+    ssr: false,
+    loading: () => <div className="h-52 w-full" />,
+  },
+);
 
 const STAT_RANGES: { value: StatisticsRange; label: string }[] = [
   { value: "year", label: "Año" },

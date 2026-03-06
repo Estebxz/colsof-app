@@ -1,13 +1,22 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 
 import { Button } from "@ui/button";
 import { CustomLegend } from "@charts/legend";
 import { UseIcon } from "@hooks/use-icons";
-import { CasesAreaChart } from "@/app/components/dashboard/cases-area-chart";
+import type { CasesAreaChartProps } from "@/app/components/dashboard/cases-area-chart";
 import { useCasos } from "@hooks/use-casos";
 import type { TimeRange, ChartData } from "@type/charts";
+
+const CasesAreaChart = dynamic<CasesAreaChartProps>(
+  () => import("@/app/components/dashboard/cases-area-chart"),
+  {
+    ssr: false,
+    loading: () => <div className="h-52 w-full" />,
+  },
+);
 
 const TIME_RANGES: { value: TimeRange; label: string }[] = [
   { value: "12m", label: "12 Meses" },
