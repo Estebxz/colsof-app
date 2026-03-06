@@ -9,6 +9,7 @@ import { HomeLogo } from "@shared/home-logo";
 import { Button } from "@ui/button";
 import { supportWhatsapp } from "@lib/constants";
 import { cn } from "@lib/utils";
+import { notifySuccess } from "@lib/notify";
 
 import styles from "./sign-in-card.module.css";
 
@@ -140,6 +141,9 @@ export default function SignInCard() {
 
       const rol = normalizeRole(user.rol);
       if (rol === "admin" || rol === "gestor" || rol === "tecnico") {
+        notifySuccess(`Bienvenido, ${user.nombre}`, {
+          description: `Has iniciado sesión como ${user.rol}`
+        });
         router.push("/dashboard");
         return;
       }

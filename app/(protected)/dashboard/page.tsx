@@ -16,6 +16,7 @@ import { ConfirmActionDialog } from "@ui/confirm-action-dialog";
 import Image from "next/image";
 import Link from "next/link";
 import type { Usuario } from "@type/user";
+import { notifyError } from "@lib/notify";
 
 export default function Dashboard() {
   const {
@@ -45,14 +46,14 @@ export default function Dashboard() {
         } | null;
 
         if (!res.ok) {
-          alert(json?.error || "No se pudo actualizar el rol");
+          notifyError(json?.error || "No se pudo actualizar el rol");
           return;
         }
 
         await refresh({ silent: true });
       } catch (err) {
         console.error("PATCH /api/usuarios (rol) error", err);
-        alert("No se pudo actualizar el rol");
+        notifyError("No se pudo actualizar el rol");
       } finally {
         setSavingId(null);
       }
@@ -78,14 +79,16 @@ export default function Dashboard() {
         } | null;
 
         if (!res.ok) {
-          alert(json?.error || "No se pudo actualizar el estado del usuario");
+          notifyError(
+            json?.error || "No se pudo actualizar el estado del usuario",
+          );
           return;
         }
 
         await refresh({ silent: true });
       } catch (err) {
         console.error("PATCH /api/usuarios (estado) error", err);
-        alert("No se pudo actualizar el estado del usuario");
+        notifyError("No se pudo actualizar el estado del usuario");
       } finally {
         setSavingId(null);
       }

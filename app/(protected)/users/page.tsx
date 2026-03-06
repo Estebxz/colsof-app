@@ -23,6 +23,7 @@ import { useUsuarios } from "@hooks/use-usuarios";
 import { useIsMobile } from "@hooks/use-mobile";
 import { ConfirmActionDialog } from "@ui/confirm-action-dialog";
 import { Input } from "@ui/input";
+import { notifyError } from "@lib/notify";
 
 export default function Users() {
   const isMobile = useIsMobile();
@@ -115,7 +116,7 @@ export default function Users() {
       } | null;
 
       if (!res.ok) {
-        alert(json?.error || "No se pudo actualizar el usuario");
+        notifyError(json?.error || "No se pudo actualizar el usuario");
         return;
       }
 
@@ -124,7 +125,7 @@ export default function Users() {
       await refresh({ silent: true });
     } catch (err) {
       console.error("PATCH /api/usuarios error", err);
-      alert("No se pudo actualizar el usuario");
+      notifyError("No se pudo actualizar el usuario");
     } finally {
       setSavingId(null);
     }
@@ -150,7 +151,7 @@ export default function Users() {
       } | null;
 
       if (!res.ok) {
-        alert(json?.error || "No se pudo actualizar el rol");
+        notifyError(json?.error || "No se pudo actualizar el rol");
         return;
       }
 
@@ -159,7 +160,7 @@ export default function Users() {
       await refresh({ silent: true });
     } catch (err) {
       console.error("PATCH /api/usuarios (rol) error", err);
-      alert("No se pudo actualizar el rol");
+      notifyError("No se pudo actualizar el rol");
     } finally {
       setSavingId(null);
     }
@@ -184,7 +185,9 @@ export default function Users() {
       } | null;
 
       if (!res.ok) {
-        alert(json?.error || "No se pudo actualizar el estado del usuario");
+        notifyError(
+          json?.error || "No se pudo actualizar el estado del usuario",
+        );
         return;
       }
 
@@ -193,7 +196,7 @@ export default function Users() {
       await refresh({ silent: true });
     } catch (err) {
       console.error("PATCH /api/usuarios (estado) error", err);
-      alert("No se pudo actualizar el estado del usuario");
+      notifyError("No se pudo actualizar el estado del usuario");
     } finally {
       setSavingId(null);
     }
