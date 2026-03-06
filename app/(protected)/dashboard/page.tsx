@@ -9,6 +9,7 @@ import CasesReport from "@dashboard/cases-report";
 import { Badge } from "@ui/badges";
 import { AvatarInitials } from "@ui/avatar";
 import { DataTable } from "@ui/data-table";
+import { badgePropsForState } from "@lib/badge";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -94,20 +95,18 @@ export default function Dashboard() {
                   {
                     key: "estado",
                     header: "Estado",
-                    cell: (u) => (
-                      <Badge
-                        variant={
-                          (u.estado || "").toLowerCase() === "suspendido"
-                            ? "warning"
-                            : u.activo
-                              ? "success"
-                              : "destructive"
-                        }
-                        pulse
-                      >
-                        {u.estado || (u.activo ? "Activo" : "Inactivo")}
-                      </Badge>
-                    ),
+                    cell: (u) => {
+                      const estadoLabel =
+                        u.estado || (u.activo ? "Activo" : "Inactivo");
+                      const { variant, pulse } =
+                        badgePropsForState(estadoLabel);
+
+                      return (
+                        <Badge variant={variant} pulse={pulse}>
+                          {estadoLabel}
+                        </Badge>
+                      );
+                    },
                   },
                   {
                     key: "rol",

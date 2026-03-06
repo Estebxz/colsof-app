@@ -6,13 +6,13 @@ export type Usuario = {
   nombre: string | null;
   email: string | null;
   rol: string | null;
-  estado: string | null;
+  estado: EstadoUsuario | null;
   activo: boolean;
 };
 
 export type UsuariosFilters = {
   rol?: string | null;
-  estado?: string | null;
+  estado?: EstadoUsuario | null;
   q?: string | null;
 };
 
@@ -25,6 +25,7 @@ export type UsuariosMeta = {
 export type UseUsuariosResult = {
   usuarios: Usuario[];
   meta: UsuariosMeta | null;
+  totalPages: number | null;
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;

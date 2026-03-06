@@ -1,7 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import type { UseUsuariosResult, UsuariosFilters, UsuariosMeta, Usuario } from "@type/user";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type {
+  UseUsuariosResult,
+  UsuariosFilters,
+  UsuariosMeta,
+  Usuario,
+} from "@type/user";
 
 export function useUsuarios({
   page = 1,
@@ -18,6 +23,17 @@ export function useUsuarios({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const qNormalized = useMemo(() => {
+    if (!q) return null;
+    const v = q.trim();
+    return v.length > 0 ? v : null;
+  }, [q]);
+
+  const totalPages = useMemo(() => {
+    if (!meta?.total) return null;
+    return Math.max(1, Math.ceil(meta.total / pageSize));
+  }, [meta?.total, pageSize]);
+
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -28,7 +44,7 @@ export function useUsuarios({
       params.set("pageSize", String(pageSize));
       if (rol) params.set("rol", rol);
       if (estado) params.set("estado", estado);
-      if (q) params.set("q", q);
+      if (qNormalized) params.set("q", qNormalized);
 
       const res = await fetch(`/api/usuarios?${params.toString()}`, {
         method: "GET",
@@ -59,11 +75,11 @@ export function useUsuarios({
     } finally {
       setLoading(false);
     }
-  }, [estado, page, pageSize, q, rol]);
+  }, [estado, page, pageSize, qNormalized, rol]);
 
   useEffect(() => {
     void refresh();
   }, [refresh]);
 
-  return { usuarios, meta, loading, error, refresh };
+  return { usuarios, meta, totalPages, loading, error, refresh };
 }

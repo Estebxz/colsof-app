@@ -69,7 +69,7 @@ export function DataTable<T>({
               <tr
                 key={getRowId(row)}
                 className={cn(
-                  "transition-colors hover:bg-accent/60 -z-20",
+                  "transition-colors hover:bg-accent/60",
                   rowClassName?.(row, index),
                 )}
               >
