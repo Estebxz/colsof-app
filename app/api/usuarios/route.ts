@@ -104,3 +104,115 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  const user = await getSessionUser();
+  if (!user) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
+  try {
+    const body = (await req.json().catch(() => null)) as {
+      id?: number | string;
+      nombre?: string | null;
+      rol?: string | null;
+      estado?: string | null;
+    } | null;
+
+    const idRaw = body?.id;
+    const id =
+      typeof idRaw === "number" || typeof idRaw === "string"
+        ? String(idRaw).trim()
+        : "";
+
+    if (!id) {
+      return NextResponse.json({ error: "ID requerido" }, { status: 400 });
+    }
+
+    const nombre = body?.nombre ?? null;
+    const rol = body?.rol ?? null;
+    const estado = body?.estado ?? null;
+
+    if (nombre !== null && typeof nombre !== "string") {
+      return NextResponse.json({ error: "Nombre inválido" }, { status: 400 });
+    }
+
+    if (rol !== null && typeof rol !== "string") {
+      return NextResponse.json({ error: "Rol inválido" }, { status: 400 });
+    }
+
+    if (estado !== null) {
+      if (typeof estado !== "string") {
+        return NextResponse.json({ error: "Estado inválido" }, { status: 400 });
+      }
+
+      const e = estado.trim().toLowerCase();
+      if (e !== "activo" && e !== "inactivo" && e !== "suspendido") {
+        return NextResponse.json({ error: "Estado inválido" }, { status: 400 });
+      }
+    }
+
+    if (nombre === null && rol === null && estado === null) {
+      return NextResponse.json(
+        { error: "Nada para actualizar" },
+        { status: 400 },
+      );
+    }
+
+    const payload: Record<string, unknown> = {};
+    if (nombre !== null) payload.nombre_usuario = nombre.trim();
+    if (rol !== null) payload.rol = rol;
+    if (estado !== null) payload.estado = estado;
+
+    const supabase = createSupabaseAdminClient();
+    const { error } = await supabase
+      .schema("base_de_datos_csu")
+      .from("usuario")
+      .update(payload)
+      .eq("id_usuario", id);
+
+    if (error) {
+      console.error("/api/usuarios PATCH supabase error", error);
+      return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("/api/usuarios PATCH error", err);
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  const user = await getSessionUser();
+  if (!user) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
+  try {
+    const url = new URL(req.url);
+    const idParam = url.searchParams.get("id");
+    const id = idParam ? idParam.trim() : "";
+
+    if (!id) {
+      return NextResponse.json({ error: "ID requerido" }, { status: 400 });
+    }
+
+    const supabase = createSupabaseAdminClient();
+    const { error } = await supabase
+      .schema("base_de_datos_csu")
+      .from("usuario")
+      .delete()
+      .eq("id_usuario", id);
+
+    if (error) {
+      console.error("/api/usuarios DELETE supabase error", error);
+      return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("/api/usuarios DELETE error", err);
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+  }
+}

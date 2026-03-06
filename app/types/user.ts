@@ -28,5 +28,5 @@ export type UseUsuariosResult = {
   totalPages: number | null;
   loading: boolean;
   error: string | null;
-  refresh: () => Promise<void>;
+  refresh: (opts?: { silent?: boolean }) => Promise<void>;
 };

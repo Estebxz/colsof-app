@@ -20,7 +20,10 @@ export type IconName =
   | "download"
   | "whatsapp"
   | "arrow-prev-small"
-  | "dot-menu";
+  | "dot-menu"
+  | "edit-user"
+  | "user-cog"
+  | "check-circle";
 
 type DropdownSelectOption<T extends string> = {
   value: T;
@@ -58,4 +61,19 @@ export type DataTableProps<T> = {
   className?: string;
   tableClassName?: string;
   bodyClassName?: string;
+};
+
+export interface ActionsProps {
+  label: string;
+  tooltip: string;
+  icon: IconName;
+  url: string;
+}
+
+export type SidebarCollapsibleGroupItem = {
+  label: string;
+  tooltip: string;
+  icon: IconName;
+  url: string;
+  isActive: boolean;
 };

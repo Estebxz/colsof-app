@@ -34,48 +34,53 @@ export function useUsuarios({
     return Math.max(1, Math.ceil(meta.total / pageSize));
   }, [meta?.total, pageSize]);
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const refresh = useCallback(
+    async (opts?: { silent?: boolean }) => {
+      const silent = Boolean(opts?.silent);
 
-    try {
-      const params = new URLSearchParams();
-      params.set("page", String(page));
-      params.set("pageSize", String(pageSize));
-      if (rol) params.set("rol", rol);
-      if (estado) params.set("estado", estado);
-      if (qNormalized) params.set("q", qNormalized);
+      if (!silent) setLoading(true);
+      setError(null);
 
-      const res = await fetch(`/api/usuarios?${params.toString()}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      try {
+        const params = new URLSearchParams();
+        params.set("page", String(page));
+        params.set("pageSize", String(pageSize));
+        if (rol) params.set("rol", rol);
+        if (estado) params.set("estado", estado);
+        if (qNormalized) params.set("q", qNormalized);
 
-      const json = (await res.json().catch(() => null)) as {
-        data?: Usuario[];
-        meta?: UsuariosMeta;
-        error?: string;
-      } | null;
+        const res = await fetch(`/api/usuarios?${params.toString()}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
 
-      if (!res.ok) {
-        setError(json?.error || "Error al cargar usuarios");
-        return;
+        const json = (await res.json().catch(() => null)) as {
+          data?: Usuario[];
+          meta?: UsuariosMeta;
+          error?: string;
+        } | null;
+
+        if (!res.ok) {
+          setError(json?.error || "Error al cargar usuarios");
+          return;
+        }
+
+        if (!json?.data) {
+          setError("Respuesta inválida del servidor");
+          return;
+        }
+
+        setUsuarios(json.data);
+        setMeta(json.meta || null);
+      } catch (err) {
+        console.error("/api/usuarios error", err);
+        setError("Error al cargar usuarios");
+      } finally {
+        if (!silent) setLoading(false);
       }
-
-      if (!json?.data) {
-        setError("Respuesta inválida del servidor");
-        return;
-      }
-
-      setUsuarios(json.data);
-      setMeta(json.meta || null);
-    } catch (err) {
-      console.error("/api/usuarios error", err);
-      setError("Error al cargar usuarios");
-    } finally {
-      setLoading(false);
-    }
-  }, [estado, page, pageSize, qNormalized, rol]);
+    },
+    [estado, page, pageSize, qNormalized, rol],
+  );
 
   useEffect(() => {
     void refresh();

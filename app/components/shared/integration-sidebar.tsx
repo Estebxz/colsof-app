@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSidebarActive } from "@hooks/use-sidebar-active";
+import { UseIcon } from "@hooks/use-icons";
 
 import {
   Sidebar,
@@ -15,86 +15,23 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarRail,
-} from "../ui/aside";
-import { TooltipProvider } from "../ui/tooltip";
+} from "@ui/aside";
+import { TooltipProvider } from "@ui/tooltip";
+import { LogoutButton } from "./logout-button";
 
 import { cn } from "@lib/utils";
-import { UseIcon } from "@hooks/use-icons";
-import { AvatarInitials } from "../ui/avatar";
-
-type UserData = {
-  nombre: string;
-};
-
-function LogoutButton() {
-  const [user, setUser] = useState<UserData | null>(null);
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadMe() {
-      try {
-        const res = await fetch("/api/me", { method: "GET" });
-        const json = (await res.json().catch(() => null)) as {
-          data?: UserData;
-          error?: string;
-        } | null;
-
-        if (!res.ok) return;
-        if (!json?.data) return;
-        if (cancelled) return;
-        setUser(json.data);
-      } catch {
-        // ignore
-      }
-    }
-
-    void loadMe();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  async function onLogout() {
-    if (loading) return;
-    setLoading(true);
-
-    try {
-      await fetch("/api/logout", { method: "POST" });
-    } catch (err) {
-      console.error("/api/logout error", err);
-    } finally {
-      try {
-        window.localStorage.removeItem("usuario");
-      } catch {}
-
-      router.replace("/");
-      router.refresh();
-      setLoading(false);
-    }
-  }
-
-  return (
-    <SidebarMenuButton
-      tooltip="Cerrar sesión"
-      className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-primary group-data-[collapsible=icon]:justify-center cursor-pointer"
-      onClick={onLogout}
-      disabled={loading}
-      aria-label="Cerrar sesión"
-    >
-      <AvatarInitials name={user?.nombre || "-"} size="md" />
-      <span className="group-data-[collapsible=icon]:hidden">
-        {loading ? "Cerrando..." : "Cerrar sesión"}
-      </span>
-    </SidebarMenuButton>
-  );
-}
+import { mainNav, otherNav, usersNav } from "@lib/sidebar-nav";
+import { SidebarNavItem } from "@shared/sidebar/sidebar-nav-item";
+import { SidebarCollapsibleGroup } from "@shared/sidebar/sidebar-collapsible-group";
+import type { SidebarCollapsibleGroupItem } from "@type/ui";
 
 function MinimalSidebar() {
-  const pathname = usePathname();
+  const { isUsersRoute, isActiveUrl } = useSidebarActive();
+
+  const usersItems: SidebarCollapsibleGroupItem[] = usersNav.map((i) => ({
+    ...i,
+    isActive: isActiveUrl(i.url),
+  }));
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -141,124 +78,36 @@ function MinimalSidebar() {
             </SidebarTrigger>
           </SidebarMenuButton>
         </SidebarHeader>
-        {/*Navegacion principal | Dashboard*/}
         <SidebarContent className="flex-1 gap-0">
           <SidebarGroup>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Navegar al inicio"
-                  isActive={pathname === "/dashboard"}
-                  className={cn(
-                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
-                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
-                  )}
-                >
-                  <Link
-                    aria-label="Ir al inicio"
-                    href="/dashboard"
-                    className={cn(
-                      "flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center",
-                    )}
-                  >
-                    <UseIcon name="home" className="size-4 shrink-0" />
-                    <span className="truncate group-data-[collapsible=icon]:hidden">
-                      Inicio
-                    </span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              {/*Nuevo documento*/}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Acceder a Estadisticas"
-                  isActive={pathname === "/statistics"}
-                  className={cn(
-                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
-                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
-                  )}
-                >
-                  <Link
-                    aria-label="Acceder a Estadisticas"
-                    href="/statistics"
-                    className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
-                  >
-                    <UseIcon name="charts" className="size-4 shrink-0" />
-                    <span className="truncate group-data-[collapsible=icon]:hidden">
-                      Estadisticas
-                    </span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              {/* Ver documentos */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Acceder a herramientas BD"
-                  isActive={pathname === "/data"}
-                  className={cn(
-                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
-                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
-                  )}
-                >
-                  <Link
-                    aria-label="Acceder a herramientas BD"
-                    href="/data"
-                    className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
-                  >
-                    <UseIcon name="db" className="size-4 shrink-0" />
-                    <span className="truncate group-data-[collapsible=icon]:hidden">
-                      Herramientas BD
-                    </span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Usuarios"
-                  isActive={pathname === "/users"}
-                  className={cn(
-                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
-                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
-                  )}
-                >
-                  <Link
-                    aria-label="Usuarios"
-                    href="/users"
-                    className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
-                  >
-                    <UseIcon name="user" className="size-4 shrink-0" />
-                    <span className="truncate group-data-[collapsible=icon]:hidden">
-                      Usuarios
-                    </span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Notificaciones"
-                  isActive={pathname === "/notification"}
-                  className={cn(
-                    "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-blue-500 group-data-[collapsible=icon]:justify-center",
-                    "data-[active=true]:bg-accent/80 data-[active=true]:text-blue-500",
-                  )}
-                >
-                  <Link
-                    aria-label="Notificaciones"
-                    href="/notification"
-                    className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
-                  >
-                    <UseIcon name="bell" className="size-4 shrink-0" />
-                    <span className="truncate group-data-[collapsible=icon]:hidden">
-                      Notificaciones
-                    </span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {mainNav.map((item) => (
+                <SidebarNavItem
+                  key={item.url}
+                  label={item.label}
+                  tooltip={item.tooltip}
+                  icon={item.icon}
+                  url={item.url}
+                  isActive={isActiveUrl(item.url)}
+                />
+              ))}
+              <SidebarCollapsibleGroup
+                label="Usuarios"
+                tooltip="Acceder a usuarios"
+                icon="user"
+                isActive={isUsersRoute}
+                items={usersItems}
+              />
+              {otherNav.map((item) => (
+                <SidebarNavItem
+                  key={item.url}
+                  label={item.label}
+                  tooltip={item.tooltip}
+                  icon={item.icon}
+                  url={item.url}
+                  isActive={isActiveUrl(item.url)}
+                />
+              ))}
             </SidebarMenu>
           </SidebarGroup>
           <SidebarGroup className="mt-auto">
