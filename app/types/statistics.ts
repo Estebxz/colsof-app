@@ -16,5 +16,5 @@ export type UseStatisticsResult = {
   data: StatisticsData | null;
   loading: boolean;
   error: string | null;
-  refresh: () => Promise<void>;
+  refresh: (opts?: { silent?: boolean }) => Promise<void>;
 };

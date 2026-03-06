@@ -57,7 +57,7 @@ export type UseCasosResult = {
   casos: Caso[];
   loading: boolean;
   error: string | null;
-  refresh: () => Promise<void>;
+  refresh: (opts?: { silent?: boolean }) => Promise<void>;
 };
 
 export type TrendPoint = {

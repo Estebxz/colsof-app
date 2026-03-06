@@ -8,39 +8,44 @@ export function useCasos(limit = 2000): UseCasosResult {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const refresh = useCallback(
+    async (opts?: { silent?: boolean }) => {
+      const silent = Boolean(opts?.silent);
 
-    try {
-      const res = await fetch(`/api/casos?limit=${limit}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      if (!silent) setLoading(true);
+      setError(null);
 
-      const json = (await res.json().catch(() => null)) as {
-        data?: Caso[];
-        error?: string;
-      } | null;
+      try {
+        const res = await fetch(`/api/casos?limit=${limit}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
 
-      if (!res.ok) {
-        setError(json?.error || "Error al cargar casos");
-        return;
+        const json = (await res.json().catch(() => null)) as {
+          data?: Caso[];
+          error?: string;
+        } | null;
+
+        if (!res.ok) {
+          setError(json?.error || "Error al cargar casos");
+          return;
+        }
+
+        if (!json?.data) {
+          setError("Respuesta inválida del servidor");
+          return;
+        }
+
+        setCasos(json.data);
+      } catch (err) {
+        console.error("/api/casos error", err);
+        setError("Error al cargar casos");
+      } finally {
+        if (!silent) setLoading(false);
       }
-
-      if (!json?.data) {
-        setError("Respuesta inválida del servidor");
-        return;
-      }
-
-      setCasos(json.data);
-    } catch (err) {
-      console.error("/api/casos error", err);
-      setError("Error al cargar casos");
-    } finally {
-      setLoading(false);
-    }
-  }, [limit]);
+    },
+    [limit],
+  );
 
   useEffect(() => {
     void refresh();
