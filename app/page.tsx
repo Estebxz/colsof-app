@@ -17,7 +17,7 @@ export default async function Home() {
         <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="lg:col-span-2 lg:flex lg:flex-col lg:items-center lg:text-center">
             {user && (
-              <Badge variant="outline" size="lg">
+              <Badge variant="secondary" size="lg" className="font-medium">
                 <div className="flex items-center gap-2">
                   <AvatarInitials name={user.nombre} size="sm" />
                   {user.nombre}

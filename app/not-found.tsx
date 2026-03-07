@@ -2,9 +2,10 @@ import { UseIcon } from "@hooks/use-icons";
 import Header from "@layout/header";
 import Footer from "@layout/footer";
 import { Button } from "@ui/button";
-import Link from "next/link";
+import { Badge } from "@ui/badges";
 import { getSessionUser } from "@auth/session";
 import { supportWhatsapp } from "@lib/constants";
+import Link from "next/link";
 
 export default async function NotFound() {
   const user = await getSessionUser();
@@ -13,7 +14,9 @@ export default async function NotFound() {
       <Header userName={user?.nombre} />
       <main className="flex flex-1 items-center justify-center px-6">
         <section className="text-center">
-          <p className="text-base font-semibold text-blue-600">404</p>
+          <Badge variant="secondary">
+            <p className="text-base font-semibold text-blue-600">404</p>
+          </Badge>
 
           <h1 className="my-4 text-6xl tracking-tight font-extrabold sm:text-7xl">
             Página No <br />
