@@ -29,12 +29,15 @@ export default async function NotFound() {
 
           <div className="mt-8 flex items-center justify-center gap-x-6">
             <Link href="/">
-              <Button variant="info">Volver al inicio</Button>
+              <Button variant="info">
+                <UseIcon name="arrow-up-left" className="size-4" />
+                Volver al inicio
+              </Button>
             </Link>
 
             <a href={supportWhatsapp} target="_blank" rel="noopener noreferrer">
               <Button variant="secondary">
-                <UseIcon name="arrow-up-left" className="size-4 rotate-y-180" />
+                <UseIcon name="whatsapp" className="size-4" />
                 Contactar soporte
               </Button>
             </a>
