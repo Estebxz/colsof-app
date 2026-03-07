@@ -4,8 +4,6 @@ export type IconName =
   | "grid"
   | "github"
   | "escape"
-  | "panel-left"
-  | "panel-right"
   | "plus"
   | "arrow-up-left"
   | "alert-circle"

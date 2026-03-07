@@ -142,7 +142,7 @@ export default function SignInCard() {
       const rol = normalizeRole(user.rol);
       if (rol === "admin" || rol === "gestor" || rol === "tecnico") {
         notifySuccess(`Bienvenido, ${user.nombre}`, {
-          description: `Has iniciado sesión como ${user.rol}`
+          description: `Has iniciado sesión como ${user.rol}`,
         });
         router.push("/dashboard");
         return;
@@ -244,6 +244,7 @@ export default function SignInCard() {
             />
 
             <Button
+              type="button"
               variant="ghost"
               className={styles.toggle}
               size="icon"

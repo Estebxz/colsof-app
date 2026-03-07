@@ -18,7 +18,7 @@
   display: none;
   background: color-mix(in oklch, var(--destructive) 12%, var(--card));
   border: 1.5px solid var(--destructive-foreground);
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   padding: 16px 18px;
   margin-bottom: 24px;
   animation: slideDown 0.3s ease-out;
@@ -76,7 +76,7 @@
   height: 52px;
   padding: 0 16px;
   border: 1px solid var(--border);
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--foreground);
