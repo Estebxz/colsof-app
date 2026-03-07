@@ -459,7 +459,13 @@ export default function Users() {
   );
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background text-foreground">
+    <main>
+      <header className="mb-5">
+        <h1 className="text-xl font-semibold">Usuarios</h1>
+        <p className="text-muted-foreground text-sm">
+          Actualiza los datos, rol o estado.
+        </p>
+      </header>
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
         <UsersFilters<Role, EstadoUsuario>
           q={q}
@@ -486,12 +492,12 @@ export default function Users() {
             />
           </div>
 
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-xs text-muted-foreground">
+          <footer className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs text-muted-foreground">
               {meta?.total !== null && meta?.total !== undefined
                 ? `${meta.total.toLocaleString("es-CO")} usuarios`
                 : ""}
-            </div>
+            </p>
 
             <div className="flex items-center gap-2">
               <Button
@@ -503,10 +509,10 @@ export default function Users() {
                 Anterior
               </Button>
 
-              <div className="text-xs text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 Página {page}
                 {totalPages ? ` / ${totalPages}` : ""}
-              </div>
+              </span>
 
               <Button
                 variant="ghost"
@@ -522,9 +528,9 @@ export default function Users() {
                 Siguiente
               </Button>
             </div>
-          </div>
+          </footer>
         </section>
       </div>
-    </div>
+    </main>
   );
 }

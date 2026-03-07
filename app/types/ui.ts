@@ -1,6 +1,7 @@
 export type IconName =
   | "arrow-left"
-  | "arrow-right"
+  | "panel-left"
+  | "panel-right"
   | "grid"
   | "github"
   | "escape"
