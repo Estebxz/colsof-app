@@ -38,7 +38,7 @@ export function SidebarCollapsibleGroup({
             tooltip={tooltip}
             isActive={isActive}
             className={cn(
-              "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-blue-500/80 tracking-wide group-data-[collapsible=icon]:justify-center",
+              "flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent/80 hover:text-blue-500/80 tracking-wide group-data-[collapsible=icon]:justify-center cursor-pointer",
             )}
           >
             <UseIcon name={icon} className="size-4 shrink-0" />
