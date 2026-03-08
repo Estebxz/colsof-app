@@ -22,7 +22,9 @@ export type IconName =
   | "dot-menu"
   | "edit-user"
   | "user-cog"
-  | "check-circle";
+  | "check-circle"
+  | "eye-off"
+  | "padlock";
 
 type DropdownSelectOption<T extends string> = {
   value: T;

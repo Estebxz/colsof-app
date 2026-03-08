@@ -15,7 +15,7 @@ import { badgePropsForState } from "@lib/badge";
 import { notifyError } from "@lib/notify";
 import { UseIcon } from "@hooks/use-icons";
 import { useUsuarios } from "@hooks/use-usuarios";
-import type { Role, EstadoUsuario, Usuario } from "@type/user";
+import type { Role, StateUser, Usuario } from "@type/user";
 
 const ROLE_OPTIONS: { value: Role; label: string }[] = [
   { value: "Administrador", label: "Administrador" },
@@ -23,7 +23,7 @@ const ROLE_OPTIONS: { value: Role; label: string }[] = [
   { value: "Tecnico", label: "Tecnico" },
 ];
 
-const ESTADO_OPTIONS: { value: EstadoUsuario; label: string }[] = [
+const ESTADO_OPTIONS: { value: StateUser; label: string }[] = [
   { value: "Activo", label: "Activo" },
   { value: "Inactivo", label: "Inactivo" },
   { value: "Suspendido", label: "Suspendido" },
@@ -41,7 +41,7 @@ export default function Users() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [rol, setRol] = useState<Role | null>(null);
-  const [estado, setEstado] = useState<EstadoUsuario | null>(null);
+  const [estado, setEstado] = useState<StateUser | null>(null);
   const [q, setQ] = useState<string>("");
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -148,7 +148,7 @@ export default function Users() {
   );
 
   const setUserEstado = useCallback(
-    async (id: string, nextEstado: EstadoUsuario) => {
+    async (id: string, nextEstado: StateUser) => {
       if (savingId) return;
       setSavingId(id);
       try {
@@ -198,7 +198,7 @@ export default function Users() {
     setPage(1);
   }, []);
 
-  const onEstadoChange = useCallback((v: EstadoUsuario | null) => {
+  const onEstadoChange = useCallback((v: StateUser | null) => {
     setEstado(v);
     setPage(1);
   }, []);
@@ -467,7 +467,7 @@ export default function Users() {
         </p>
       </header>
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-        <UsersFilters<Role, EstadoUsuario>
+        <UsersFilters<Role, StateUser>
           q={q}
           onQueryChange={onQueryChange}
           rol={rol}

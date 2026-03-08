@@ -5,14 +5,14 @@ import { cn } from "@lib/utils";
 interface AvatarInitialsProps {
 	name: string;
 	className?: string;
-	/** @default "md" */
-	size?: "sm" | "md" | "lg";
+	size?: "sm" | "md" | "lg" | "xl";
 }
 
 const sizeClasses = {
 	sm: "size-6 text-[10px]",
 	md: "size-8 text-xs",
 	lg: "size-10 text-sm",
+	xl: "size-14 text-base"
 };
 
 function getInitials(name: string): string {

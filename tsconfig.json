@@ -27,7 +27,8 @@
       "@shared/*": ["./app/components/shared/*"],
       "@dashboard/*": ["./app/components/dashboard/*"],
       "@layout/*": ["./app/components/layout/*"],
-      "@auth/*": ["./app/server/auth/*"]
+      "@auth/*": ["./app/server/auth/*"],
+      "@schemas/*": ["./app/server/schemas/*"]
     }
   },
   "include": [

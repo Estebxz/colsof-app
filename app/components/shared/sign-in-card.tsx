@@ -12,6 +12,7 @@ import { cn } from "@lib/utils";
 import { notifySuccess } from "@lib/notify";
 
 import styles from "./sign-in-card.module.css";
+import { Input } from "../ui/input";
 
 function validateEmail(email: string) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -226,7 +227,7 @@ export default function SignInCard() {
             Contraseña
           </label>
           <div className={styles.inputWithIcon}>
-            <input
+            <Input
               type={showPassword ? "text" : "password"}
               id="password"
               name="password"
@@ -266,7 +267,7 @@ export default function SignInCard() {
 
         <div className={styles.options}>
           <label className={styles.remember}>
-            <input
+            <Input
               type="checkbox"
               id="remember"
               name="remember"

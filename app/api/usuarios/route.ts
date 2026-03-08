@@ -3,10 +3,149 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@auth/session";
 import { createSupabaseAdminClient } from "@/app/server/db/supabase";
 
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 function parseIntParam(v: string | null, fallback: number) {
   const n = v ? Number(v) : NaN;
   if (!Number.isFinite(n)) return fallback;
   return Math.trunc(n);
+}
+
+export async function POST(req: Request) {
+  const user = await getSessionUser();
+  if (!user) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
+  try {
+    const body = (await req.json().catch(() => null)) as {
+      nombre?: string | null;
+      email?: string | null;
+      contrasena?: string | null;
+      rol?: string | null;
+      state?: string | null;
+    } | null;
+
+    const nombre = typeof body?.nombre === "string" ? body.nombre.trim() : "";
+    const email = typeof body?.email === "string" ? body.email.trim() : "";
+    const contrasenaRaw =
+      typeof body?.contrasena === "string" ? body.contrasena.trim() : "";
+    const rol = typeof body?.rol === "string" ? body.rol.trim() : "";
+    const state = typeof body?.state === "string" ? body.state.trim() : "";
+
+    if (!nombre) {
+      return NextResponse.json({ error: "Nombre requerido" }, { status: 400 });
+    }
+
+    if (!email || !isValidEmail(email)) {
+      return NextResponse.json({ error: "Correo inválido" }, { status: 400 });
+    }
+
+    if (!contrasenaRaw) {
+      return NextResponse.json(
+        { error: "Contraseña requerida" },
+        { status: 400 },
+      );
+    }
+
+    if (rol !== "Gestor" && rol !== "Tecnico" && rol !== "Administrador") {
+      return NextResponse.json({ error: "Rol inválido" }, { status: 400 });
+    }
+
+    if (state && state !== "Activo" && state !== "Inactivo") {
+      return NextResponse.json({ error: "Estado inválido" }, { status: 400 });
+    }
+
+    const adminIdRaw = String(user.id || "").trim();
+    const adminIdNumber = Number(adminIdRaw);
+    const administrador_id_administrador = Number.isFinite(adminIdNumber)
+      ? Math.trunc(adminIdNumber)
+      : null;
+
+    const supabase = createSupabaseAdminClient();
+
+    const { data: existingUser, error: existingUserError } = await supabase
+      .schema("base_de_datos_csu")
+      .from("usuario")
+      .select("id_usuario")
+      .eq("nombre_usuario", nombre)
+      .maybeSingle();
+
+    if (existingUserError) {
+      console.error(
+        "/api/usuarios POST supabase unique check error",
+        existingUserError,
+      );
+      return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    }
+
+    if (existingUser) {
+      return NextResponse.json(
+        { field: "nombre", error: "El nombre de usuario ya existe" },
+        { status: 409 },
+      );
+    }
+
+    const { data: existingEmail, error: existingEmailError } = await supabase
+      .schema("base_de_datos_csu")
+      .from("usuario")
+      .select("id_usuario")
+      .eq("correo", email)
+      .maybeSingle();
+
+    if (existingEmailError) {
+      console.error(
+        "/api/usuarios POST supabase email unique check error",
+        existingEmailError,
+      );
+      return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    }
+
+    if (existingEmail) {
+      return NextResponse.json(
+        { field: "email", error: "El correo ya existe" },
+        { status: 409 },
+      );
+    }
+
+    const insertPayload: Record<string, unknown> = {
+      nombre_usuario: nombre,
+      correo: email,
+      contrasena: contrasenaRaw,
+      rol,
+      estado: state || "Activo",
+    };
+
+    if (administrador_id_administrador !== null) {
+      insertPayload.administrador_id_administrador =
+        administrador_id_administrador;
+    }
+
+    const { error } = await supabase
+      .schema("base_de_datos_csu")
+      .from("usuario")
+      .insert(insertPayload);
+
+    if (error) {
+      console.error("/api/usuarios POST supabase error", error);
+
+      if ("code" in error && error.code === "23505") {
+        return NextResponse.json(
+          { error: "Registro duplicado" },
+          { status: 409 },
+        );
+      }
+
+      return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true }, { status: 201 });
+  } catch (err) {
+    console.error("/api/usuarios POST error", err);
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+  }
 }
 
 export async function GET(req: Request) {
