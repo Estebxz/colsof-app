@@ -1,6 +1,6 @@
-import type { EstadoUsuario } from "@type/user";
+import type { StateUser } from "@type/user";
 
-export function badgePropsForState(estado: EstadoUsuario | null) {
+export function badgePropsForState(estado: StateUser | null) {
   const e = (estado || "").toLowerCase();
   if (e === "activo") return { variant: "success" as const, pulse: true };
   if (e === "suspendido") return { variant: "warning" as const, pulse: false };
