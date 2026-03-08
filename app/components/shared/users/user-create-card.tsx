@@ -1,16 +1,19 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { createUserFormSchema } from "@schemas/create";
-import { notifySuccess } from "@lib/notify";
+
 import { AvatarInitials } from "@ui/avatar";
 import { DropdownSelect } from "@ui/dropdown-menu";
 import { Badge } from "@ui/badges";
-import { Role, StateUser } from "@type/user";
-import { UseIcon } from "@/app/hooks/use-icons";
+import { UseIcon } from "@hooks/use-icons";
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { Separator } from "@ui/separator";
+
+import { createUserFormSchema } from "@schemas/create";
+import { notifySuccess } from "@lib/notify";
+import { badgePropsForState } from "@lib/badge";
+import { Role, StateUser } from "@type/user";
 import styles from "./user-create-card.module.css";
 
 const ROLE_OPTIONS: { value: Role; label: string }[] = [
@@ -47,6 +50,8 @@ export default function UserCreateCard() {
   }>({});
 
   const { nombre, email, contrasena, confirmContrasena, rol, state } = form;
+
+  const stateBadgeProps = badgePropsForState(state);
 
   const setField =
     <K extends keyof typeof form>(k: K) =>
@@ -171,20 +176,16 @@ export default function UserCreateCard() {
         >
           <figure className={styles.previewContainer}>
             <AvatarInitials name={nombre || "?"} size="xl" />
-            <figcaption className="flex min-w-0 flex-col gap-1">
-              <span className="truncate text-sm font-medium text-foreground">
+            <figcaption className={styles.previewCaption}>
+              <span className={styles.previewName}>
                 {nombre || "Nombre del usuario"}
               </span>
-              <span className="text-xs text-muted-foreground">
+              <span className={styles.previewEmail}>
                 {email || "ejemplo@colsof.com"}
               </span>
-              <div className="flex items-center gap-2">
+              <div className={styles.previewBadges}>
                 {rol && <Badge variant="info">{rol}</Badge>}
-                {state && (
-                  <Badge variant={state === "Activo" ? "success" : "destructive"}>
-                    {state}
-                  </Badge>
-                )}
+                {state && <Badge {...stateBadgeProps}>{state}</Badge>}
               </div>
             </figcaption>
           </figure>
@@ -209,7 +210,7 @@ export default function UserCreateCard() {
                 />
                 {fieldErrors.nombre && (
                   <div className={styles.toggle}>
-                    <UseIcon name="alert-circle" className="size-4 shrink-0" />
+                    <UseIcon name="alert-circle" className={styles.icon} />
                     <span>{fieldErrors.nombre}</span>
                   </div>
                 )}
@@ -230,7 +231,7 @@ export default function UserCreateCard() {
                 />
                 {fieldErrors.email && (
                   <div className={styles.toggle}>
-                    <UseIcon name="alert-circle" className="size-4 shrink-0" />
+                    <UseIcon name="alert-circle" className={styles.icon} />
                     <span>{fieldErrors.email}</span>
                   </div>
                 )}
@@ -253,13 +254,13 @@ export default function UserCreateCard() {
                       setField("contrasena")(e.target.value);
                       clearError("contrasena");
                     }}
-                    placeholder="Ingrese la contraseña"
+                    placeholder="••••••••"
                     autoComplete="new-password"
                     type={showPasswords ? "text" : "password"}
                   />
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="secondary"
                     size="icon"
                     className="absolute right-1 top-1 size-8"
                     aria-label={
@@ -283,13 +284,13 @@ export default function UserCreateCard() {
                       setField("confirmContrasena")(e.target.value);
                       clearError("confirmContrasena");
                     }}
-                    placeholder="Confirme la contraseña"
+                    placeholder="••••••••"
                     autoComplete="new-password"
                     type={showPasswords ? "text" : "password"}
                   />
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="secondary"
                     size="icon"
                     className="absolute right-1 top-1 size-8"
                     aria-label={
@@ -305,26 +306,26 @@ export default function UserCreateCard() {
               </div>
               {fieldErrors.contrasena && (
                 <div className={styles.toggle}>
-                  <UseIcon name="alert-circle" className="size-4 shrink-0" />
+                  <UseIcon name="alert-circle" className={styles.icon} />
                   <span>{fieldErrors.contrasena}</span>
                 </div>
               )}
               {fieldErrors.confirmContrasena && (
                 <div className={styles.toggle}>
-                  <UseIcon name="alert-circle" className="size-4 shrink-0" />
+                  <UseIcon name="alert-circle" className={styles.icon} />
                   <span>{fieldErrors.confirmContrasena}</span>
                 </div>
               )}
 
               {!fieldErrors.confirmContrasena && passwordsMismatch && (
                 <div className={styles.toggle}>
-                  <UseIcon name="alert-circle" className="size-4 shrink-0" />
+                  <UseIcon name="alert-circle" className={styles.icon} />
                   <span>No coinciden</span>
                 </div>
               )}
               {!fieldErrors.confirmContrasena && passwordsMatch && (
                 <div className={styles.success}>
-                  <UseIcon name="check-circle" className="size-4 shrink-0" />
+                  <UseIcon name="check-circle" className={styles.icon} />
                   <span>Coinciden</span>
                 </div>
               )}
@@ -352,7 +353,7 @@ export default function UserCreateCard() {
                 />
                 {fieldErrors.rol && (
                   <div className={styles.toggle}>
-                    <UseIcon name="alert-circle" className="size-4 shrink-0" />
+                    <UseIcon name="alert-circle" className={styles.icon} />
                     <span>{fieldErrors.rol}</span>
                   </div>
                 )}
@@ -373,7 +374,7 @@ export default function UserCreateCard() {
                 />
                 {fieldErrors.state && (
                   <div className={styles.toggle}>
-                    <UseIcon name="alert-circle" className="size-4 shrink-0" />
+                    <UseIcon name="alert-circle" className={styles.icon} />
                     <span>{fieldErrors.state}</span>
                   </div>
                 )}

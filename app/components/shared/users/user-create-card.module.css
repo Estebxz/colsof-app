@@ -46,12 +46,40 @@
   border: 1px solid var(--color-border);
 }
 
+.previewCaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.previewName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-foreground);
+}
+
+.previewEmail {
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+}
+
+.previewBadges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
 .toggle {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--color-destructive)
+  color: var(--color-destructive);
 }
 
 .success {
@@ -59,5 +87,11 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--color-success)
+  color: var(--color-success);
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
