@@ -16,7 +16,18 @@ export default function RootLayout({
     <html lang="es">
       <body>
         {children}
-        <Toaster richColors />
+        <Toaster
+          richColors
+          toastOptions={{
+            classNames: {
+              toast: "app-toast",
+              success: "app-toast-success",
+              error: "app-toast-error",
+              warning: "app-toast-warning",
+              info: "app-toast-info",
+            },
+          }}
+        />
       </body>
     </html>
   );

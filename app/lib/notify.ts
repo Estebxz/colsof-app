@@ -5,13 +5,22 @@ type NotifyOptions = {
 };
 
 export function notifySuccess(message: string, opts?: NotifyOptions) {
-  toast.success(message, { description: opts?.description });
+  toast.success(message, {
+    description: opts?.description,
+    className: "app-toast-success",
+  });
 }
 
 export function notifyError(message: string, opts?: NotifyOptions) {
-  toast.error(message, { description: opts?.description });
+  toast.error(message, {
+    description: opts?.description,
+    className: "app-toast-error",
+  });
 }
 
 export function notifyInfo(message: string, opts?: NotifyOptions) {
-  toast.message(message, { description: opts?.description });
+  toast.message(message, {
+    description: opts?.description,
+    className: "app-toast-info",
+  });
 }
