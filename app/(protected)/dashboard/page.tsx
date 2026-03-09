@@ -381,7 +381,7 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <Image
-                        src={`/default.webp`}
+                        src={`/default.svg`}
                         alt={user.nombre || "Usuario"}
                         className="size-9 rounded-full object-cover"
                         width={36}

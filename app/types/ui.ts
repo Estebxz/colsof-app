@@ -24,7 +24,8 @@ export type IconName =
   | "user-cog"
   | "check-circle"
   | "eye-off"
-  | "padlock";
+  | "padlock"
+  | "user-search";
 
 type DropdownSelectOption<T extends string> = {
   value: T;

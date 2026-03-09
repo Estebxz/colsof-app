@@ -32,7 +32,7 @@ export const usersNav: SidebarNavItemConfig[] = [
   {
     label: "Ver usuarios",
     tooltip: "Ver todos los usuarios",
-    icon: "grid",
+    icon: "user-search",
     url: "/users",
   },
   {
