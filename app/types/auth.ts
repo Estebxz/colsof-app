@@ -20,3 +20,11 @@ export type SessionUser =
 export type SessionPayload = {
   user: SessionUser;
 };
+
+export interface AuthPanelProps {
+  isActive: boolean;
+  align: "left" | "right";
+  onNavigate?: () => void;
+  navigateLabel?: string;
+  children: React.ReactNode;
+}

@@ -1,15 +1,34 @@
+"use client";
+
+import { useAuthMode } from "@hooks/use-auth-mode";
+import { AuthPanel } from "@shared/auth-panel";
 import SignInCard from "@shared/sign-in-card";
+import SignUpCard from "@shared/sign-up-card";
 import Footer from "@layout/footer";
 
 export default function SignInPage() {
+  const { isSignIn, goToSignIn, goToSignUp } = useAuthMode();
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1 flex-col md:flex-row">
-        <div className="flex w-full flex-1 flex-col items-center justify-center p-6 md:w-1/2 md:p-12">
+        <AuthPanel
+          isActive={isSignIn}
+          align="left"
+          onNavigate={goToSignUp}
+          navigateLabel="¿No tienes cuenta?"
+        >
           <SignInCard />
-        </div>
+        </AuthPanel>
 
-        <div className="hidden md:block md:w-1/2 bg-ring" />
+        <AuthPanel
+          isActive={!isSignIn}
+          align="right"
+          onNavigate={goToSignIn}
+          navigateLabel="Volver"
+        >
+          <SignUpCard />
+        </AuthPanel>
       </div>
 
       <Footer />

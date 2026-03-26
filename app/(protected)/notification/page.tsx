@@ -29,7 +29,7 @@ const stats: statsProps[] = [
     label: "Usuarios",
     value: 3,
     subtext: "2 nuevas",
-    icon: "grid",
+    icon: "user",
     variant: "users",
   },
   {

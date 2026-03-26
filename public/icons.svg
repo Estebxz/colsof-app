@@ -31,13 +31,6 @@
     />
   </symbol>
 
-  <symbol id="icon-grid" viewBox="0 0 24 24">
-    <path
-      d="M3 3h8v10H3V3zm2 2v6h4V5H5zm8-2h8v6h-8V3zm2 2v2h4V5h-4zm-2 6h8v10h-8V11zm2 2v6h4v-6h-4zM3 15h8v6H3v-6zm2 2v2h4v-2H5z"
-      fill="currentColor"
-    />
-  </symbol>
-
   <symbol id="icon-panel-left" viewBox="0 0 32 32">
     <path d="M28 4H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 22H12V6h16Z" />
     <path d="M0 0h32v32H0z" fill="none" />
@@ -185,57 +178,9 @@
     />
   </symbol>
 
-  <symbol id="icon-camera" viewBox="0 0 24 24">
-    <rect
-      x="3"
-      y="6"
-      width="18"
-      height="12"
-      rx="2"
-      fill="currentColor"
-      stroke="currentColor"
-      stroke-width="1.5"
-    />
-    <circle
-      cx="8"
-      cy="12"
-      r="2"
-      fill="currentColor"
-      stroke="currentColor"
-      stroke-width="1.2"
-    />
-    <rect
-      x="13"
-      y="10"
-      width="5"
-      height="2"
-      rx="1"
-      fill="currentColor"
-      stroke="currentColor"
-      stroke-width="1.2"
-    />
-  </symbol>
-
   <symbol id="icon-bell" viewBox="0 0 16 16">
     <path d="M3 5C3 2.23858 5.23858 0 8 0C10.7614 0 13 2.23858 13 5V8L15 10V12H1V10L3 8V5Z" />
     <path d="M7.99999 16C6.69378 16 5.58254 15.1652 5.1707 14H10.8293C10.4175 15.1652 9.30621 16 7.99999 16Z" />
-  </symbol>
-
-  <symbol id="icon-terminal" viewBox="0 0 24 24">
-    <circle
-      cx="12"
-      cy="12"
-      r="3"
-      fill="currentColor"
-      stroke="currentColor"
-      stroke-width="1.5"
-    />
-    <path
-      d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-      fill="currentColor"
-      stroke="currentColor"
-      stroke-width="1.2"
-    />
   </symbol>
 
   <symbol id="icon-download" viewBox="0 0 24 24">
@@ -388,6 +333,16 @@
   <symbol id="icon-user-search" viewBox="0 0 24 24">
     <path
       d="M18.5 19.5L20 21M4 21C4 17.134 7.13401 14 11 14M19 17.5C19 18.8807 17.8807 20 16.5 20C15.1193 20 14 18.8807 14 17.5C14 16.1193 15.1193 15 16.5 15C17.8807 15 19 16.1193 19 17.5ZM15 7C15 9.20914 13.2091 11 11 11C8.79086 11 7 9.20914 7 7C7 4.79086 8.79086 3 11 3C13.2091 3 15 4.79086 15 7Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </symbol>
+  <symbol id="icon-arrow-default" viewBox="0 0 24 24">
+    <path
+      d="M12 4v16M12 4l-4 4M12 4l4 4"
       fill="none"
       stroke="currentColor"
       stroke-width="2"
