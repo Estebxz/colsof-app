@@ -74,7 +74,7 @@ function MinimalSidebar() {
             asChild
           >
             <SidebarTrigger>
-              <UseIcon name="arrow-left" className="size-4 fill-black" />
+              <UseIcon name="arrow-up-left" className="size-4 fill-black" />
             </SidebarTrigger>
           </SidebarMenuButton>
         </SidebarHeader>
