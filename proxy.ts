@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 function getSecret() {
-  const secret = process.env.AUTH_SECRET || "colsof_secret";
+  const secret = process.env.AUTH_SECRET;
   return new TextEncoder().encode(secret);
 }
 
