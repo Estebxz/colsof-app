@@ -340,6 +340,7 @@
       stroke-linejoin="round"
     />
   </symbol>
+  
   <symbol id="icon-arrow-default" viewBox="0 0 24 24">
     <path
       d="M12 4v16M12 4l-4 4M12 4l4 4"

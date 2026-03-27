@@ -13,8 +13,8 @@ export const UseIcon = ({ name, className = "" }: IconProps) => {
       aria-hidden="true"
     >
       <use
-        href={`/icons.svg#icon-${name}`}
-        xlinkHref={`/icons.svg#icon-${name}`}
+        href={`/sprites.svg#icon-${name}`}
+        xlinkHref={`/sprites.svg#icon-${name}`}
       />
     </svg>
   );
