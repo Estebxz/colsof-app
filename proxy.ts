@@ -12,7 +12,7 @@ export async function proxy(req: NextRequest) {
 
   if (!token) {
     const url = req.nextUrl.clone();
-    url.pathname = "/sign-in";
+    url.pathname = "/auth";
     return NextResponse.redirect(url);
   }
 
@@ -21,7 +21,7 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   } catch {
     const url = req.nextUrl.clone();
-    url.pathname = "/sign-in";
+    url.pathname = "/auth";
     const res = NextResponse.redirect(url);
     res.cookies.set("colsof_session", "", { path: "/", maxAge: 0 });
     return res;
