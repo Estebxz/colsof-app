@@ -5,7 +5,7 @@
 <strong><h1>Web Oficial de COLSOF</h1></strong>
 <a href="https://colsof-app.vercel.app/" target="_blank" rel="noopener noreferrer">
  
-![texto](/public/capture.webp)
+![texto](/public/images/capture.webp)
  
 </a>
 </div>
