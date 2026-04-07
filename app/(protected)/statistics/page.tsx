@@ -9,6 +9,7 @@ import type { TrendAreaChartProps } from "@type/charts";
 import { useStatistics } from "@hooks/use-statistics";
 import { UseIcon } from "@hooks/use-icons";
 import { StatisticsRange } from "@type/statistics";
+import { DataTable } from "@ui/data-table";
 
 const TrendAreaChart = dynamic<TrendAreaChartProps>(
   () => import("@ui/trend-area-chart"),
@@ -30,13 +31,140 @@ function formatHours(hours: number | null) {
   return hours.toFixed(1);
 }
 
+function toIsoDay(d: Date) {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function buildZeroTrend(range: StatisticsRange) {
+  const now = new Date();
+
+  if (range === "year") {
+    return Array.from({ length: 12 }, (_, i) => {
+      const d = new Date(now);
+      d.setMonth(d.getMonth() - (11 - i));
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      return { label: `${yyyy}-${mm}`, value: 0 };
+    });
+  }
+
+  if (range === "quarter") {
+    return Array.from({ length: 12 }, (_, i) => {
+      const d = new Date(now);
+      d.setDate(d.getDate() - (11 - i) * 7);
+      return { label: toIsoDay(d), value: 0 };
+    });
+  }
+
+  const days = range === "month" ? 30 : 7;
+  return Array.from({ length: days }, (_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (days - 1 - i));
+    return { label: toIsoDay(d), value: 0 };
+  });
+}
+
+type GlobalStatsRow = {
+  label: string;
+  total: number;
+  resueltos: number;
+  porcentaje: string;
+  tiempo: string;
+  distribucion: string;
+};
+
 export default function StatsPage() {
   const [range, setRange] = useState<StatisticsRange>("month");
-  const { data, loading, error } = useStatistics(range);
+  const { data, loading } = useStatistics(range);
 
   const total = data?.kpis.total ?? 0;
   const resueltos = data?.kpis.resueltos ?? 0;
   const avgHours = data?.kpis.avgResolutionHours ?? null;
+
+  const trendPoints = useMemo(() => {
+    if (loading) return [];
+    const incoming = data?.trend || [];
+    if (incoming.length > 0) {
+      return incoming.map((p) => ({ label: p.date, value: p.count }));
+    }
+    return buildZeroTrend(range);
+  }, [data?.trend, loading, range]);
+
+  const globalTableData = useMemo<GlobalStatsRow[]>(() => {
+    const t = data?.kpis.total ?? 0;
+    const r = data?.kpis.resueltos ?? 0;
+    const pct = t > 0 ? `${Math.round((r / t) * 100)}%` : "—";
+
+    const distribution = (() => {
+      const dist = data?.resolutionDistribution || [];
+      const totalDist = dist.reduce((acc, p) => acc + (p.value || 0), 0);
+      if (totalDist <= 0) return "—";
+
+      let top = dist[0];
+      for (const p of dist) {
+        if ((p.value || 0) > (top?.value || 0)) top = p;
+      }
+
+      if (!top) return "—";
+      const topPct = Math.round(((top.value || 0) / totalDist) * 100);
+      return `${top.label} (${topPct}%)`;
+    })();
+
+    return [
+      {
+        label: "General",
+        total: t,
+        resueltos: r,
+        porcentaje: pct,
+        tiempo: formatHours(data?.kpis.avgResolutionHours ?? null),
+        distribucion: distribution,
+      },
+    ];
+  }, [
+    data?.kpis.avgResolutionHours,
+    data?.kpis.resueltos,
+    data?.kpis.total,
+    data?.resolutionDistribution,
+  ]);
+
+  const globalTableColumns = useMemo(
+    () => [
+      {
+        key: "label",
+        header: "Categoría",
+        cell: (row: GlobalStatsRow) => row.label,
+      },
+      {
+        key: "total",
+        header: "Total",
+        cell: (row: GlobalStatsRow) => row.total,
+      },
+      {
+        key: "resueltos",
+        header: "Resueltos",
+        cell: (row: GlobalStatsRow) => row.resueltos,
+      },
+      {
+        key: "porcentaje",
+        header: "%",
+        cell: (row: GlobalStatsRow) => row.porcentaje,
+      },
+      {
+        key: "tiempo",
+        header: "Tiempo",
+        cell: (row: GlobalStatsRow) => row.tiempo,
+      },
+      {
+        key: "distribucion",
+        header: "Distribución",
+        cell: (row: GlobalStatsRow) => row.distribucion,
+      },
+    ],
+    [],
+  );
 
   const statCards = useMemo(
     () => [
@@ -62,7 +190,6 @@ export default function StatsPage() {
         title: "Satisfacción",
         value: 4.5,
         color: "#7c5cbf",
-        statusLabel: "★★★★★",
       },
     ],
     [avgHours, resueltos, total],
@@ -84,11 +211,8 @@ export default function StatsPage() {
         ))}
       </section>
 
-      {error ? (
-        <div className="text-xs text-destructive-foreground px-1">{error}</div>
-      ) : null}
-
-      <section className="flex flex-wrap gap-2 bg-card border border-border rounded-xl p-2">
+      <div className="bg-card border border-border rounded-2xl p-6 shadow-sm pb-6">    
+      <section className="flex items-end justify-end gap-1.5 shrink-0 mb-4">
         {STAT_RANGES.map(({ value, label }) => (
           <Button
             key={value}
@@ -101,31 +225,23 @@ export default function StatsPage() {
             {label}
           </Button>
         ))}
-        <Button variant="info" size="sm" className="ml-auto">
+        <Button variant="info" size="sm">
           <UseIcon name="download" className="size-5 shrink-0" />
           <span>Exportar CSV</span>
         </Button>
       </section>
 
-      {/* Charts */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
         <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-          <h2 className="text-[13.5px] font-semibold text-[#1a1d23] mb-4">
+          <h2 className="text-lg font-semibold tracking-tight text-foreground truncate mb-4">
             Tendencia de Casos
           </h2>
           {loading ? (
             <div className="text-xs text-muted-foreground">Cargando…</div>
-          ) : (data?.trend?.length || 0) === 0 ? (
-            <div className="text-xs text-muted-foreground">
-              Sin datos para graficar.
-            </div>
           ) : (
             <div className="w-full h-52">
               <TrendAreaChart
-                points={(data?.trend || []).map((p) => ({
-                  label: p.date,
-                  value: p.count,
-                }))}
+                points={trendPoints}
                 seriesLabel="Casos"
                 color="var(--primary)"
               />
@@ -134,57 +250,43 @@ export default function StatsPage() {
         </div>
 
         <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-          <h2 className="text-[13.5px] font-semibold text-[#1a1d23] mb-4">
+          <h2 className="text-lg font-semibold tracking-tight text-foreground truncate mb-4">
             Distribución Tiempo de Resolución
           </h2>
-          <div id="timeDistribution" className="w-full" />
+          {loading ? (
+            <div className="text-xs text-muted-foreground">Cargando…</div>
+          ) : (data?.resolutionDistribution?.length || 0) === 0 ? (
+            <div className="text-xs text-muted-foreground">
+              Sin datos para graficar.
+            </div>
+          ) : (
+            <div className="w-full h-52">
+              <TrendAreaChart
+                points={(data?.resolutionDistribution || []).map((p) => ({
+                  label: p.label,
+                  value: p.value,
+                }))}
+                seriesLabel="Resoluciones"
+                color="var(--ring)"
+              />
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Tabla categorías */}
-      <section className="bg-card border border-border rounded-xl p-5 shadow-sm">
-        <h2 className="text-[13.5px] font-semibold text-[#1a1d23] mb-4">
+      <section className="bg-card border border-border rounded-xl p-5 shadow-sm mt-6">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground truncate mb-4">
           Estadísticas por Categoría
         </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b border-[#d8dce2]">
-                {[
-                  "Categoría",
-                  "Total",
-                  "Resueltos",
-                  "%",
-                  "Tiempo",
-                  "Distribución",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="text-left text-[10.5px] font-semibold uppercase tracking-[0.07em] text-muted-foreground pb-3 px-2.5 first:pl-0 last:pr-0"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody
-              id="categoryTable"
-              className="[&>tr]:border-b [&>tr]:border-[#e2e5ea] [&>tr:last-child]:border-0 [&>tr>td]:py-3 [&>tr>td]:px-2.5 [&>tr>td:first-child]:pl-0 [&>tr>td:last-child]:pr-0 [&>tr>td]:text-[13px] [&>tr>td]:text-[#1a1d23] [&>tr:hover>td]:bg-[#f0f2f5] [&>tr]:transition-colors"
-            />
-          </table>
-        </div>
-      </section>
-
-      {/* Técnicos */}
-      <section className="bg-card border border-border rounded-xl p-5 shadow-sm">
-        <h2 className="text-[13.5px] font-semibold text-[#1a1d23] mb-4">
-          Rendimiento de Técnicos
-        </h2>
-        <div
-          id="technicians"
-          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3"
+        <DataTable
+          data={globalTableData}
+          columns={globalTableColumns}
+          getRowId={(row) => row.label}
+          loading={loading}
+          emptyText="Sin datos."
         />
       </section>
+      </div>
     </div>
   );
 }

@@ -6,8 +6,8 @@ import { getSessionUser } from "@auth/session";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "COLSOF - Dashboard",
-  description: "Dashboard interactivo solo para usuarios registrados",
+  title: "COLSOF - Sistema de gestión CSU",
+  description: "Sistema de gestión de tickets orientado al desarrollo y seguimiento de solicitudes por roles. Integra autenticación de usuarios.",
 };
 
 export default async function DashboardLayout({

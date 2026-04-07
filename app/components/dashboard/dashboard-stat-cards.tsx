@@ -9,24 +9,11 @@ export default function DashboardStatCards() {
 
   const statCards = useMemo(
     () => [
-      {
-        title: "Solucionados",
-        value: stats?.solucionados ?? 0,
-        color: "var(--ring)",
-      },
+      { title: "Solucionados", value: stats?.solucionados ?? 0, color: "var(--ring)" },
       { title: "Creados", value: stats?.creados ?? 0, color: "var(--warning)" },
-      {
-        title: "En Pausa",
-        value: stats?.enPausa ?? 0,
-        color: "var(--muted-foreground)",
-      },
-      {
-        title: "Cerrados",
-        value: stats?.cerrados ?? 0,
-        color: "var(--success)",
-      },
-    ],
-    [stats],
+      { title: "En Pausa", value: stats?.enPausa ?? 0, color: "var(--muted-foreground)" },
+      { title: "Cerrados", value: stats?.cerrados ?? 0, color: "var(--success)" },
+    ], [stats]
   );
 
   return (

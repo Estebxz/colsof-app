@@ -25,6 +25,34 @@ function toDayKey(input: string | Date) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+type Bucket = {
+  label: string;
+  minHoursInclusive: number;
+  maxHoursExclusive: number | null;
+  count: number;
+};
+
+function buildResolutionBuckets(): Bucket[] {
+  return [
+    { label: "0-1h", minHoursInclusive: 0, maxHoursExclusive: 1, count: 0 },
+    { label: "1-4h", minHoursInclusive: 1, maxHoursExclusive: 4, count: 0 },
+    { label: "4-8h", minHoursInclusive: 4, maxHoursExclusive: 8, count: 0 },
+    { label: "8-24h", minHoursInclusive: 8, maxHoursExclusive: 24, count: 0 },
+    { label: "1-3d", minHoursInclusive: 24, maxHoursExclusive: 72, count: 0 },
+    { label: "3d+", minHoursInclusive: 72, maxHoursExclusive: null, count: 0 },
+  ];
+}
+
+function addToBucket(buckets: Bucket[], hours: number) {
+  for (const b of buckets) {
+    if (hours < b.minHoursInclusive) continue;
+    if (b.maxHoursExclusive === null || hours < b.maxHoursExclusive) {
+      b.count += 1;
+      return;
+    }
+  }
+}
+
 export async function GET(req: Request) {
   const user = await getSessionUser();
   if (!user) {
@@ -33,7 +61,8 @@ export async function GET(req: Request) {
 
   try {
     const url = new URL(req.url);
-    const rangeParam = (url.searchParams.get("range") || "month") as StatisticsRange;
+    const rangeParam = (url.searchParams.get("range") ||
+      "month") as StatisticsRange;
     const range: StatisticsRange =
       rangeParam === "week" ||
       rangeParam === "month" ||
@@ -61,7 +90,11 @@ export async function GET(req: Request) {
       .gte("fecha_creacion", fromIso);
 
     if (totalRes.error || resueltosRes.error) {
-      console.error("/api/statistics count error", totalRes.error, resueltosRes.error);
+      console.error(
+        "/api/statistics count error",
+        totalRes.error,
+        resueltosRes.error,
+      );
       return NextResponse.json({ error: "Error interno" }, { status: 500 });
     }
 
@@ -85,18 +118,25 @@ export async function GET(req: Request) {
     const byDay = new Map<string, number>();
     let resolutionCount = 0;
     let resolutionHoursSum = 0;
+    const resolutionBuckets = buildResolutionBuckets();
 
     for (const r of rows || []) {
       const day = toDayKey(r.fecha_creacion);
       if (day) byDay.set(day, (byDay.get(day) || 0) + 1);
 
-      if (r.estado === "resuelto" && r.fecha_creacion && r.fecha_actualizacion) {
+      if (
+        r.estado === "resuelto" &&
+        r.fecha_creacion &&
+        r.fecha_actualizacion
+      ) {
         const created = new Date(r.fecha_creacion);
         const updated = new Date(r.fecha_actualizacion);
         const ms = updated.getTime() - created.getTime();
         if (Number.isFinite(ms) && ms >= 0) {
+          const hours = ms / (1000 * 60 * 60);
           resolutionCount += 1;
-          resolutionHoursSum += ms / (1000 * 60 * 60);
+          resolutionHoursSum += hours;
+          addToBucket(resolutionBuckets, hours);
         }
       }
     }
@@ -108,6 +148,11 @@ export async function GET(req: Request) {
     const avgResolutionHours =
       resolutionCount > 0 ? resolutionHoursSum / resolutionCount : null;
 
+    const resolutionDistribution = resolutionBuckets.map((b) => ({
+      label: b.label,
+      value: b.count,
+    }));
+
     return NextResponse.json({
       data: {
         range,
@@ -118,6 +163,7 @@ export async function GET(req: Request) {
           avgResolutionHours,
         },
         trend,
+        resolutionDistribution,
         truncated: (rows || []).length >= MAX_ROWS,
       },
     });

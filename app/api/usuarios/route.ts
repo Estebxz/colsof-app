@@ -66,6 +66,27 @@ export async function POST(req: Request) {
 
     const supabase = createSupabaseAdminClient();
 
+    const administradorExists = await (async () => {
+      if (administrador_id_administrador === null) return false;
+
+      const { data, error } = await supabase
+        .schema("base_de_datos_csu")
+        .from("administrador")
+        .select("id_administrador")
+        .eq("id_administrador", administrador_id_administrador)
+        .maybeSingle();
+
+      if (error) {
+        console.error(
+          "/api/usuarios POST supabase administrador lookup error",
+          error,
+        );
+        return false;
+      }
+
+      return Boolean(data);
+    })();
+
     const { data: existingUser, error: existingUserError } = await supabase
       .schema("base_de_datos_csu")
       .from("usuario")
@@ -118,7 +139,7 @@ export async function POST(req: Request) {
       estado: state || "Activo",
     };
 
-    if (administrador_id_administrador !== null) {
+    if (administradorExists && administrador_id_administrador !== null) {
       insertPayload.administrador_id_administrador =
         administrador_id_administrador;
     }
@@ -135,6 +156,16 @@ export async function POST(req: Request) {
         return NextResponse.json(
           { error: "Registro duplicado" },
           { status: 409 },
+        );
+      }
+
+      if ("code" in error && error.code === "23503") {
+        return NextResponse.json(
+          {
+            error:
+              "No se pudo asociar el administrador al usuario (referencia inválida).",
+          },
+          { status: 400 },
         );
       }
 
